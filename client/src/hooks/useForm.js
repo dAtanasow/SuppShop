@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 export function useForm(initialValues, submitCallback, options = {}) {
     const [values, setValues] = useState(initialValues);
-    const [errors, setErrors] = useState({});
+    const [errors, setError] = useState({});
     const [pending, setPending] = useState(false);
 
     useEffect(() => {
@@ -18,7 +18,7 @@ export function useForm(initialValues, submitCallback, options = {}) {
         }));
 
         if (errors[e.target.name]) {
-            setErrors((state) => ({
+            setError((state) => ({
                 ...state,
                 [e.target.name]: undefined,
             }));
@@ -34,9 +34,9 @@ export function useForm(initialValues, submitCallback, options = {}) {
 
         try {
             await submitCallback(values);
-            setErrors({});
+            setError({});
         } catch (error) {
-            setErrors(error);
+            setError(error);
         } finally {
             setPending(false);
         }
@@ -45,6 +45,8 @@ export function useForm(initialValues, submitCallback, options = {}) {
     return {
         values,
         setValues,
+        setPending,
+        setError,
         changeHandler,
         submitHandler,
         errors,

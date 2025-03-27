@@ -1,39 +1,29 @@
 import { useNavigate } from "react-router-dom";
 import { useRegister } from "../hooks/useAuth";
-import { useForm } from "../hooks/useForm";
 
-const initialValues = {
-  email: "",
-  username: "",
-  phone: "",
-  password: "",
-  rePass: "",
-};
+
 
 export default function Register() {
-  const { register, pending, error, setError } = useRegister();
+  const { register, values, changeHandler, errors, pending } =
+    useRegister();
+
   const navigate = useNavigate();
 
-  const registerHandler = async () => {
+  const registerHandler = async (e) => {
+    e.preventDefault();
     if (pending) return;
     try {
       await register(values);
       navigate("/");
     } catch (err) {
       console.log(err);
-      setError({ server: "Registration failed. Please try again." });
     }
   };
-
-  const { values, changeHandler, submitHandler } = useForm(
-    initialValues,
-    registerHandler
-  );
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <form
-        onSubmit={submitHandler}
+        onSubmit={registerHandler}
         className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md"
       >
         <h2 className="text-2xl font-bold text-center mb-6">Register</h2>
@@ -53,6 +43,7 @@ export default function Register() {
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
+          {errors?.email && <p className="text-red-500">{errors.email}</p>}
         </div>
 
         <div className="mb-4">
@@ -71,6 +62,9 @@ export default function Register() {
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
+          {errors?.username && (
+            <p className="text-red-500">{errors.username}</p>
+          )}
         </div>
 
         <div className="mb-4">
@@ -89,6 +83,7 @@ export default function Register() {
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
+          {errors?.phone && <p className="text-red-500">{errors.phone}</p>}
         </div>
 
         <div className="mb-4">
@@ -107,6 +102,9 @@ export default function Register() {
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
+          {errors?.password && (
+            <p className="text-red-500">{errors.password}</p>
+          )}
         </div>
 
         <div className="mb-4">
@@ -125,9 +123,10 @@ export default function Register() {
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
+          {errors?.rePass && <p className="text-red-500">{errors.rePass}</p>}
         </div>
 
-        {error.server && <span>{error.server}</span>}
+        {errors.server && <span>{errors.server}</span>}
 
         <button
           type="submit"

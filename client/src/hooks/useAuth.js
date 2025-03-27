@@ -1,25 +1,39 @@
 import { useState } from "react";
 import userApi from "../аpi/auth-api";
+import { useForm } from "./useForm";
 
 export const useRegister = () => {
-    const [error, setError] = useState({});
-    const [pending, setPending] = useState(false);
+    const { values, setValues, changeHandler, setError, setPending, pending, errors } = useForm(
+        {
+            email: "",
+            username: "",
+            phone: "",
+            password: "",
+            rePass: "",
+        }
+    );
 
-    const registerHandler = async (userData) => {
+    const registerHandler = async () => {
         setPending(true);
         setError({});
 
         try {
-            return await userApi.register(userData);
+            await userApi.register(values);
+            setValues({});
         } catch (error) {
-            setError({ server: error.message });
-            return { error: error.message };
+            if (error.message === "Email is already registered!") {
+                setError({ email: "This email is already in use." });
+            } else if (typeof error === 'object') {
+                setError(error);
+            } else {
+                setError({ general: error.message });
+            }
         } finally {
             setPending(false);
         }
     }
 
-    return { register: registerHandler, pending, error, setError }
+    return { register: registerHandler, changeHandler, pending, errors, values, setValues };
 }
 
 export const useLogin = () => {
