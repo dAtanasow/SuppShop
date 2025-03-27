@@ -1,4 +1,20 @@
+import { useNavigate } from "react-router-dom";
+import { useRegister } from "../hooks/useAuth";
+
 export default function Register() {
+  const { register, pending, error } = useRegister();
+  const navigate = useNavigate();
+
+  const registerHandler = async () => {
+    if (pending) return;
+    try {
+      await register(values);
+      navigate("/");
+    } catch (err) {
+      setError({ server: "Registration failed. Please try again." });
+    }
+  };
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <form className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">

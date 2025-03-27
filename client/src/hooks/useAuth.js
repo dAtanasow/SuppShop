@@ -1,18 +1,23 @@
+import { useState } from "react";
 import userApi from "../аpi/auth-api";
 
 export const useRegister = () => {
+    const [error, setError] = useState({});
+    const [pending, setPending] = useState(false);
 
     const registerHandler = async (email, username, phone, password, rePass) => {
-        if (password !== rePass) {
-            return { error: "Passwords don't match" };
-        }
+        setPending(true);
+        setError({});
+
         try {
-            const authData = await userApi.register(email, username, phone, password, rePass);
-            return authData;
+            await userApi.register(email, username, phone, password, rePass);
         } catch (error) {
+            setError({ server: error.message });
             return { error: error.message };
+        } finally {
+            setPending(false);
         }
     }
 
-    return registerHandler
+    return { register: registerHandler, pending, error }
 }
