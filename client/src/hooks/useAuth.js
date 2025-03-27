@@ -1,4 +1,3 @@
-import { useState } from "react";
 import userApi from "../аpi/auth-api";
 import { useForm } from "./useForm";
 
@@ -37,16 +36,21 @@ export const useRegister = () => {
 }
 
 export const useLogin = () => {
-    const [error, setError] = useState(null);
-    const [pending, setPending] = useState(false);
+    const { values, setValues, changeHandler, setError, setPending, pending, errors } = useForm(
+        {
+            email: "",
+            password: "",
+        }
+    );
 
-    const loginHandler = async (email, password) => {
+    const loginHandler = async () => {
         if (pending) return;
         setPending(true);
         setError({});
 
         try {
-            return await userApi.login(email, password);
+            await userApi.login(values);
+            setValues({});
         } catch (err) {
             setError(err.message);
         } finally {
@@ -55,8 +59,9 @@ export const useLogin = () => {
     };
 
     return {
-        loginHandler,
-        error,
+        login: loginHandler,
+        changeHandler,
+        errors,
         pending,
     };
 }
