@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
-export function useForm(initialValues, submitCallback, options = { reinitializeForm: false }) {
+export function useForm(initialValues, submitCallback, options = {}) {
     const [values, setValues] = useState(initialValues);
-    const [error, setError] = useState(null);
+    const [errors, setErrors] = useState({});
     const [pending, setPending] = useState(false);
 
     useEffect(() => {
@@ -11,23 +11,32 @@ export function useForm(initialValues, submitCallback, options = { reinitializeF
         }
     }, [initialValues, options.reinitializeForm]);
 
-
     const changeHandler = (e) => {
         setValues((state) => ({
             ...state,
             [e.target.name]: e.target.value,
         }));
+
+        if (errors[e.target.name]) {
+            setErrors((state) => ({
+                ...state,
+                [e.target.name]: undefined,
+            }));
+        }
     };
 
     const submitHandler = async (e) => {
         e.preventDefault();
+
         if (pending) return;
+
         setPending(true);
+
         try {
             await submitCallback(values);
-            setError(null);
+            setErrors({});
         } catch (error) {
-            setError(error)
+            setErrors(error);
         } finally {
             setPending(false);
         }
@@ -35,9 +44,10 @@ export function useForm(initialValues, submitCallback, options = { reinitializeF
 
     return {
         values,
+        setValues,
         changeHandler,
         submitHandler,
-        error,
-        pending
+        errors,
+        pending,
     };
 }
