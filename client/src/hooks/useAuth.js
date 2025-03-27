@@ -10,7 +10,7 @@ export const useRegister = () => {
         setError({});
 
         try {
-            await userApi.register(userData);
+            return await userApi.register(userData);
         } catch (error) {
             setError({ server: error.message });
             return { error: error.message };
@@ -20,4 +20,29 @@ export const useRegister = () => {
     }
 
     return { register: registerHandler, pending, error, setError }
+}
+
+export const useLogin = () => {
+    const [error, setError] = useState(null);
+    const [pending, setPending] = useState(false);
+
+    const loginHandler = async (email, password) => {
+        if (pending) return;
+        setPending(true);
+        setError({});
+
+        try {
+            return await userApi.login(email, password);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setPending(false);
+        }
+    };
+
+    return {
+        loginHandler,
+        error,
+        pending,
+    };
 }
