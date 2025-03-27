@@ -1,8 +1,9 @@
+import { useAuthContext } from "../context/AuthContext";
 import userApi from "../аpi/auth-api";
 import { useForm } from "./useForm";
 
 export const useRegister = () => {
-    const { values, setValues, changeHandler, setError, setPending, pending, errors } = useForm(
+    const { values, changeHandler, setError, setPending, pending, errors } = useForm(
         {
             email: "",
             username: "",
@@ -11,14 +12,15 @@ export const useRegister = () => {
             rePass: "",
         }
     );
+    const { changeAuthState } = useAuthContext()
 
     const registerHandler = async () => {
         setPending(true);
         setError({});
 
         try {
-            await userApi.register(values);
-            setValues({});
+            const authData = await userApi.register(values);
+            changeAuthState(authData);
         } catch (error) {
             if (error.message === "Email is already registered!") {
                 setError({ email: "This email is already in use." });
@@ -32,16 +34,17 @@ export const useRegister = () => {
         }
     }
 
-    return { register: registerHandler, changeHandler, pending, errors, values, setValues };
+    return { register: registerHandler, changeHandler, pending, errors };
 }
 
 export const useLogin = () => {
-    const { values, setValues, changeHandler, setError, setPending, pending, errors } = useForm(
+    const { values, changeHandler, setError, setPending, pending, errors } = useForm(
         {
             email: "",
             password: "",
         }
     );
+    const { changeAuthState } = useAuthContext()
 
     const loginHandler = async () => {
         if (pending) return;
@@ -49,8 +52,8 @@ export const useLogin = () => {
         setError({});
 
         try {
-            await userApi.login(values);
-            setValues({});
+            const authData = await userApi.login(values);
+            changeAuthState(authData);
         } catch (err) {
             setError(err.message);
         } finally {

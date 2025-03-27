@@ -37,7 +37,10 @@ export async function requester(method, url, data) {
         }
 
         if (result?.accessToken) {
-            localStorage.setItem('auth', JSON.stringify({ accessToken }));
+            localStorage.setItem('auth', JSON.stringify({
+                accessToken: result.accessToken,
+                user: result.user,
+            }));
         }
 
         return response.status === 204 ? {} : result;
