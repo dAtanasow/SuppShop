@@ -12,6 +12,8 @@ const removePassword = (data) => {
 
 async function register(req, res, next) {
     const { email, username, phone, password, rePass } = req.body;
+    console.log(req.body);
+
 
     if (password !== rePass) {
         return res.status(400).send({ message: 'Passwords do not match!' });

@@ -5,12 +5,12 @@ export const useRegister = () => {
     const [error, setError] = useState({});
     const [pending, setPending] = useState(false);
 
-    const registerHandler = async (email, username, phone, password, rePass) => {
+    const registerHandler = async (userData) => {
         setPending(true);
         setError({});
 
         try {
-            await userApi.register(email, username, phone, password, rePass);
+            await userApi.register(userData);
         } catch (error) {
             setError({ server: error.message });
             return { error: error.message };
@@ -19,5 +19,5 @@ export const useRegister = () => {
         }
     }
 
-    return { register: registerHandler, pending, error }
+    return { register: registerHandler, pending, error, setError }
 }
