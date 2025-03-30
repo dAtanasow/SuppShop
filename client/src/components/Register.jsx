@@ -1,23 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { useRegister } from "../hooks/useAuth";
 
-
-
 export default function Register() {
-  const { register, values, changeHandler, errors, pending } =
-    useRegister();
-
+  const { register, values, changeHandler, errors, pending } = useRegister();
   const navigate = useNavigate();
 
   const registerHandler = async (e) => {
     e.preventDefault();
     if (pending) return;
-    try {
-      await register(values);
-      navigate("/");
-    } catch (err) {
-      console.log(err);
-    }
+    await register(values);
+    navigate("/");
   };
 
   return (

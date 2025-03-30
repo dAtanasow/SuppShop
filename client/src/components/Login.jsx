@@ -8,13 +8,10 @@ export default function Login() {
   const loginHandler = async (e) => {
     e.preventDefault();
     if (pending) return;
-    try {
-      await login(values);
-      navigate("/");
-    } catch (err) {
-      console.log(err);
-    }
+    await login(values);
+    navigate("/");
   };
+  
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <form

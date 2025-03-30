@@ -14,6 +14,7 @@ export const useRegister = () => {
             rePass: "",
         }
     );
+
     const { changeAuthState } = useAuthContext()
 
     const registerHandler = async () => {
@@ -36,7 +37,7 @@ export const useRegister = () => {
         }
     }
 
-    return { register: registerHandler, changeHandler, pending, errors };
+    return { register: registerHandler, values, changeHandler, pending, errors };
 }
 
 export const useLogin = () => {
