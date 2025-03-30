@@ -1,4 +1,4 @@
-import CategoryItem from "./CategoryItem";
+import CategoryListItem from "./CategoryListItem";
 
 export default function CategoryList() {
   const categories = [
@@ -148,7 +148,7 @@ export default function CategoryList() {
   return (
     <ul className="flex w-240 max-h-150 p-10 flex-wrap justify-evenly overflow-y-auto absolute -left-77 hidden bg-white rounded-xl shadow-md group-hover:flex">
       {categories.map((category) => (
-        <CategoryItem
+        <CategoryListItem
           key={category.name}
           name={category.name}
           img={category.image}

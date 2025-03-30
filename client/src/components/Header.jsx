@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { useAuthContext } from "../context/AuthContext";
 import CategoryList from "./catalog/categories/CategoryList";
+import BrandList from "./catalog/brands/BrandList";
 
 export default function Header() {
   const { userId, isAuthenticate } = useAuthContext();
@@ -21,6 +22,7 @@ export default function Header() {
 
           <li className="relative group">
             <p className="hover:text-gray-700 cursor-pointer">Brands</p>
+            <BrandList />
           </li>
 
           <li>
