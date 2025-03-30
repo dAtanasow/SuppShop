@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { useAuthContext } from "../context/AuthContext";
+import CategoryList from "./catalog/categories/CategoryList";
 
 export default function Header() {
   const { userId, isAuthenticate } = useAuthContext();
@@ -15,6 +16,7 @@ export default function Header() {
         <ul className="flex w-[60%] gap-20 justify-center">
           <li className="relative group">
             <p className="hover:text-gray-700 cursor-pointer">Category</p>
+            <CategoryList />
           </li>
 
           <li className="relative group">
