@@ -6,10 +6,13 @@ const register = (userData) => request.post(`${BASE_URL}/register`, userData);
 
 const login = (userData) => request.post(`${BASE_URL}/login`, userData);
 
+const logout = () => request.post(`${BASE_URL}/logout`);
+
 
 const userApi = {
     register,
-    login
+    login,
+    logout,
 };
 
 export default userApi;

@@ -1,6 +1,8 @@
+import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import userApi from "../аpi/auth-api";
 import { useForm } from "./useForm";
+import { useCallback } from "react";
 
 export const useRegister = () => {
     const { values, changeHandler, setError, setPending, pending, errors } = useForm(
@@ -68,3 +70,14 @@ export const useLogin = () => {
         pending,
     };
 }
+
+export const useLogout = () => {
+    const { logout: localLogout } = useAuthContext();
+    const navigate = useNavigate();
+
+    return useCallback(async () => {
+        await userApi.logout();
+        localLogout();
+        navigate("/");
+    }, [localLogout, navigate]);
+};
