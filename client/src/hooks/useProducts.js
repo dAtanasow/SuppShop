@@ -23,3 +23,17 @@ export function useGetAllProducts(category, brand) {
 
     return [products, loading, error];
 }
+
+export function useGetOneProduct(productId) {
+    const [product, setProduct] = useState(null);
+
+    useEffect(() => {
+        (async () => {
+            if (!productId) return;
+            const result = await productsApi.getOne(productId);
+            setProduct(result);
+        })();
+    }, [productId]);
+
+    return [product, setProduct];
+}

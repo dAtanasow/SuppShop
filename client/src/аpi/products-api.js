@@ -14,8 +14,12 @@ const getAll = async (category, brand) => {
     return result;
 }
 
+const getOne = (productId) => request.get(`${BASE_URL}/${productId}`);
+
+
 const productsApi = {
     getAll,
+    getOne
 }
 
 export default productsApi;
