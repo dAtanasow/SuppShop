@@ -50,5 +50,5 @@ export function useAddToCart(productId) {
             setLoading(false);
         }
     };
-    return { addToCartHandler, loading, error };
+    return [addToCartHandler, loading, error];
 }

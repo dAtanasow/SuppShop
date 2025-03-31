@@ -106,3 +106,39 @@ export function useDeleteProduct() {
 
     return deleteProduct;
 }
+
+export function useGetMostRated(category) {
+    const [topFiveProducts, setTopFiveProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchMostRatedProducts = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const result = await productsApi.getAll(category);
+                if (!result || result.length === 0) {
+                    setError("No products found for this category");
+                } else {
+                    const sortedProducts = result.sort(
+                        (a, b) => b.averageRating - a.averageRating
+                    );
+                    setTopFiveProducts(sortedProducts);
+                }
+            } catch (err) {
+                setError("Error fetching products");
+                console.log(err.message);
+
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (category) {
+            fetchMostRatedProducts();
+        }
+    }, [category]);
+
+    return [topFiveProducts, loading, error];
+}
