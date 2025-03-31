@@ -3,7 +3,7 @@ import { useAuthContext } from "../context/AuthContext";
 import cartApi from "../аpi/cart-api";
 
 export function useGetCartItems() {
-    const [products, setProducts] = useState([]);
+    const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { userId } = useAuthContext();
@@ -14,9 +14,9 @@ export function useGetCartItems() {
         try {
             const result = await cartApi.getCart(userId);
             if (result && result.products.length > 0) {
-                setProducts(result.products);
+                setCartItems(result.products);
             } else {
-                setProducts([]);
+                setCartItems([]);
                 setError("No items found");
             }
         } catch (err) {
@@ -31,5 +31,5 @@ export function useGetCartItems() {
         fetchCart();
     }, [fetchCart]);
 
-    return [products, setProducts, loading, error];
+    return [cartItems, setCartItems, loading, error];
 }

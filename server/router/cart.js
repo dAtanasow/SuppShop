@@ -8,6 +8,6 @@ router.get('/:userId', cartController.getCartItems);
 router.put('/:userId', auth(), cartController.addToCart);
 router.put('/:userId/:itemId', auth(), cartController.updateCartItemQuantity);
 
-router.delete('/:userId', auth(), cartController.removeFromCart);
+router.delete('/:userId/:itemId', auth(), cartController.removeFromCart);
 
 module.exports = router

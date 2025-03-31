@@ -41,7 +41,7 @@ async function addToCart(req, res) {
 }
 
 async function removeFromCart(req, res) {
-    const { productId } = req.params;
+    const { itemId } = req.params;
     const userId = req.user._id;
 
     try {
@@ -51,7 +51,7 @@ async function removeFromCart(req, res) {
             return res.status(404).json({ message: "cartModel not found" });
         }
 
-        cart.products = cart.products.filter(p => p.productId.toString() !== productId);
+        cart.products = cart.products.filter(p => p.productId.toString() !== itemId);
 
         await cart.save();
 

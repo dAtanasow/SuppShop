@@ -6,7 +6,7 @@ import CartItem from "./CartItem";
 
 export default function Cart() {
   const { userId } = useAuthContext();
-  const [cartItems, setProducts, loading, error] = useGetCartItems(userId);
+  const [cartItems, setCartItems, loading, error] = useGetCartItems(userId);
 
   const updateItemQuantity = async (userId, itemId, newQuantity) => {
     try {
@@ -16,7 +16,7 @@ export default function Cart() {
           ? { ...item, quantity: newQuantity }
           : item
       );
-      setProducts(updatedCart);
+      setCartItems(updatedCart);
     } catch (err) {
       console.error("Error updating item quantity", err);
     }
@@ -35,13 +35,16 @@ export default function Cart() {
       const updatedCart = cartItems.filter(
         (item) => item.productId._id !== itemId
       );
-      setProducts(updatedCart);
+      setCartItems(updatedCart);
     } catch (err) {
       console.error("Error removing item", err);
     }
   };
 
   const calculateTotalPrice = () => {
+    if (!cartItems || cartItems.length === 0) {
+      return 0;
+    }
     return cartItems.reduce(
       (total, item) => total + item.productId.price * item.quantity,
       0
@@ -56,7 +59,7 @@ export default function Cart() {
     <div className="container mx-auto p-4 w-[70vw] mx-auto">
       <h1 className="text-3xl text-center p-5">CART</h1>
       {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-      {cartItems?.length !== 0 ? (
+      {cartItems && cartItems.length > 0 ? (
         cartItems.map((item) => (
           <CartItem
             key={item._id}
