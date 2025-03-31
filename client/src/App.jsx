@@ -10,6 +10,7 @@ import AuthProvider from "./context/AuthProvider";
 import Logout from "./components/Logout";
 import Catalog from "./components/catalog/Catalog";
 import ProductDetails from "./components/catalog/product-details/ProductDetails";
+import CreateEditProduct from "./components/CreateEditProduct";
 
 function App() {
   return (
@@ -20,11 +21,16 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
-            <Route path="/catalog" element={<Catalog />} />
-            <Route path="/catalog/:productId" element={<ProductDetails />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/logout" element={<Logout />} />
+            <Route path="/catalog" element={<Catalog />} />
+            <Route path="/catalog/:productId" element={<ProductDetails />} />
+            <Route path="/create" element={<CreateEditProduct />} />
+            <Route
+              path="/catalog/:productId/edit"
+              element={<CreateEditProduct />}
+            />
           </Routes>
         </main>
         <Footer />

@@ -16,10 +16,18 @@ const getAll = async (category, brand) => {
 
 const getOne = (productId) => request.get(`${BASE_URL}/${productId}`);
 
+const create = (productData) => request.post(`${BASE_URL}/create`, productData);
+
+const update = (productId, productData) => request.put(`${BASE_URL}/${productId}/edit`, productData);
+
+const remove = (productId) => request.del(`${BASE_URL}/${productId}/delete`);
 
 const productsApi = {
     getAll,
-    getOne
+    getOne,
+    create,
+    update,
+    remove
 }
 
 export default productsApi;
