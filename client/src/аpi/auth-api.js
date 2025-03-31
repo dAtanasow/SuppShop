@@ -12,12 +12,15 @@ const update = (userData, userId) => request.put(`${BASE_URL}/${userId}/profile`
 
 const getUser = (userId) => request.get(`${BASE_URL}/${userId}`);
 
+const getMyProducts = (userId) => request.get(`${BASE_URL}/${userId}/products`)
+
 const userApi = {
     register,
     login,
     logout,
     update,
     getUser,
+    getMyProducts,
 };
 
 export default userApi;

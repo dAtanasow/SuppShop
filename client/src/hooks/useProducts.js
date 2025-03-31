@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import productsApi from "../аpi/products-api";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
+import userApi from "../аpi/auth-api";
 
 export function useGetAllProducts(category, brand) {
     const [products, setProducts] = useState([]);
@@ -141,4 +142,33 @@ export function useGetMostRated(category) {
     }, [category]);
 
     return [topFiveProducts, loading, error];
+}
+
+export function useGetMyProducts() {
+    const [products, setProducts] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const { userId } = useAuthContext();
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const result = await userApi.getMyProducts(userId);
+
+                setProducts(Array.isArray(result) ? result : []);
+
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (userId) {
+            fetchProducts();
+        }
+    }, [userId]);
+    return [products, loading, error];
 }

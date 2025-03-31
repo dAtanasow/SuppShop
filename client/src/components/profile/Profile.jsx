@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useAuthContext } from "../../context/AuthContext";
 import ProfileEdit from "./ProfileEdit";
+import { Link } from "react-router-dom";
 
 export default function Profile() {
-  const { email, username, phone, img } = useAuthContext();
+  const { email, username, phone, img, userId } = useAuthContext();
   const [isEditing, setIsEditing] = useState(false);
   const toggleEditMode = () => setIsEditing((prev) => !prev);
 
@@ -35,6 +36,13 @@ export default function Profile() {
               >
                 Edit
               </button>
+
+              <Link
+                to={`/users/${userId}/products`}
+                className="px-6 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition duration-300"
+              >
+                My Items
+              </Link>
             </div>
           </div>
         )}

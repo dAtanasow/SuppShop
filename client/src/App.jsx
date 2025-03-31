@@ -13,6 +13,7 @@ import ProductDetails from "./components/catalog/product-details/ProductDetails"
 import CreateEditProduct from "./components/CreateEditProduct";
 import Profile from "./components/profile/Profile";
 import Cart from "./components/cart/Cart";
+import MyProducts from "./components/profile/MyProducts";
 
 function App() {
   return (
@@ -27,8 +28,8 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/users/:userId/products" element={<MyProducts />} />
             <Route path="/cart/:userId" element={<Cart />} />
-
             <Route path="/catalog" element={<Catalog />} />
             <Route path="/catalog/:productId" element={<ProductDetails />} />
             <Route path="/create" element={<CreateEditProduct />} />
