@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import productsApi from "../аpi/products-api";
+import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../context/AuthContext";
 
 export function useGetAllProducts(category, brand) {
     const [products, setProducts] = useState([]);
@@ -37,3 +39,56 @@ export function useGetOneProduct(productId) {
 
     return [product, setProduct];
 }
+
+export function useCreateProduct(productId) {
+    const [isEdit] = useState(!!productId);
+    const [productData, setProductData] = useState({
+        title: "",
+        imgURL: "",
+        category: "",
+        price: 0,
+        brand: "",
+        description: "",
+        flavour: "",
+        weight: 0,
+        servings: 0,
+        ingredient: "",
+        directions: "",
+        warnings: "",
+    });
+
+    const navigate = useNavigate();
+    const { userId } = useAuthContext();
+
+    useEffect(() => {
+        if (!productId) return;
+        (async () => {
+            try {
+                const product = await productsApi.getOne(productId);
+                setProductData(product);
+            } catch (err) {
+                console.error(err.message);
+            }
+        })()
+    }, [productId]);
+
+    const createOrUpdateProduct = async (values) => {
+
+        try {
+            isEdit
+                ? await productsApi.update(productId, values)
+                : await productsApi.create(values);
+
+
+            navigate(`/users/${userId}/products`);
+        } catch (err) {
+            console.error(err.message);
+        }
+    };
+
+    return {
+        isEdit,
+        productData,
+        createOrUpdateProduct,
+    };
+};

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 export function useForm(initialValues, submitCallback, options = {}) {
     const [values, setValues] = useState(initialValues);
-    const [errors, setError] = useState({});
+    const [errors, setError] = useState([]);
     const [pending, setPending] = useState(false);
 
     useEffect(() => {
@@ -34,7 +34,7 @@ export function useForm(initialValues, submitCallback, options = {}) {
 
         try {
             await submitCallback(values);
-            setError({});
+            setError([]);
         } catch (error) {
             setError(error);
         } finally {
