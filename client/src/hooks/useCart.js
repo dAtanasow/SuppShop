@@ -33,3 +33,22 @@ export function useGetCartItems() {
 
     return [cartItems, setCartItems, loading, error];
 }
+
+export function useAddToCart(productId) {
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const { userId } = useAuthContext();
+
+    const addToCartHandler = async () => {
+        try {
+            await cartApi.addToCart(productId, userId);
+            setLoading(false);
+            alert('Product added to your cart!');
+        } catch (err) {
+            setError(err.message || "An error occurred while adding to cart");
+        } finally {
+            setLoading(false);
+        }
+    };
+    return { addToCartHandler, loading, error };
+}

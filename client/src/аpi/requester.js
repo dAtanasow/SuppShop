@@ -25,24 +25,23 @@ export async function requester(method, url, data) {
             return;
         }
 
-        const contentType = response.headers.get("Content-Type");
-        const responseText = await response.text();
-
-        const result = contentType?.includes("application/json")
-            ? JSON.parse(responseText)
-            : responseText;
-
         if (!response.ok) {
             throw new Error(result?.message || 'An error occurred');
         }
 
+        const contentType = response.headers.get("Content-Type");
+        const responseText = await response.text();
+        
+        const result = contentType?.includes("application/json")
+        ? JSON.parse(responseText)
+        : responseText;
+        
         if (result?.accessToken) {
             localStorage.setItem('auth', JSON.stringify({
                 accessToken: result.accessToken,
                 user: result.user,
             }));
         }
-
         return response.status === 204 ? {} : result;
     } catch (error) {
         console.error("API Request Error:", error.message);

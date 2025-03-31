@@ -3,12 +3,14 @@ import { useState } from "react";
 import { useDeleteProduct, useGetOneProduct } from "../../../hooks/useProducts";
 import { useAuthContext } from "../../../context/AuthContext.js";
 import ToggleSection from "./ToggleSection.jsx";
+import { useAddToCart } from "../../../hooks/useCart.js";
 
 export default function ProductDetails() {
   const { userId } = useAuthContext();
   const { productId } = useParams();
   const [product] = useGetOneProduct(productId);
   const deleteProduct = useDeleteProduct();
+  const { addToCartHandler, loading } = useAddToCart(productId);
 
   const [isDescriptionOpen, setDescriptionOpen] = useState(false);
   const [isIngredientsOpen, setIngredientsOpen] = useState(false);
@@ -22,7 +24,7 @@ export default function ProductDetails() {
 
   const isAuthor = userId === product?.authorId?._id;
 
-  if (!product) return <div>Loading...</div>;
+  if (loading || !product) return <div>Loading...</div>;
 
   return (
     <>
@@ -121,7 +123,10 @@ export default function ProductDetails() {
               </button>
             </>
           ) : (
-            <button className="w-full mt-4 py-3 bg-blue-500 text-white font-semibold text-lg rounded-lg hover:bg-blue-600 focus:outline-none">
+            <button
+              className="w-full mt-4 py-3 bg-blue-500 text-white font-semibold text-lg rounded-lg hover:bg-blue-600 focus:outline-none"
+              onClick={addToCartHandler}
+            >
               Add to cart
             </button>
           )}
