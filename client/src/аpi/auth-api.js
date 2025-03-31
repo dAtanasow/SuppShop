@@ -14,6 +14,8 @@ const getUser = (userId) => request.get(`${BASE_URL}/${userId}`);
 
 const getMyProducts = (userId) => request.get(`${BASE_URL}/${userId}/products`)
 
+const checkAvailable = (email, username, phone, userId) => request.get(`${BASE_URL}/check-availability?email=${email}&username=${username}&phone=${phone}&userId=${userId}`)
+
 const userApi = {
     register,
     login,
@@ -21,6 +23,7 @@ const userApi = {
     update,
     getUser,
     getMyProducts,
+    checkAvailable
 };
 
 export default userApi;

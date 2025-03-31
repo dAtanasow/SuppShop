@@ -1,12 +1,44 @@
 import { useProfileEdit } from "../../hooks/useProfile";
+import userApi from "../../аpi/auth-api";
+import { useAuthContext } from "../../context/AuthContext";
 
 export default function ProfileEdit({ toggleEditMode }) {
-  const { values, changeHandler, submitHandler, pending } =
-    useProfileEdit(toggleEditMode);
+  const {
+    values,
+    changeHandler,
+    pending,
+    checkIfEmailOrUsernameTaken,
+    validateForm,
+    errors,
+    setError,
+  } = useProfileEdit(toggleEditMode);
+
+  const { changeAuthState, userId } = useAuthContext();
+
+  const editHandler = async (е) => {
+    е.preventDefault();
+    if (pending) return;
+
+    const validationErrors = validateForm(values);
+    if (Object.keys(validationErrors).length > 0) {
+      setError(validationErrors);
+      return;
+    }
+
+    const isAvailable = await checkIfEmailOrUsernameTaken(
+      values.email,
+      values.username,
+      values.phone
+    );
+    if (!isAvailable) return;
+    const updatedUser = await userApi.update(values, userId);
+    changeAuthState(updatedUser);
+    toggleEditMode();
+  };
 
   return (
     <form
-      onSubmit={submitHandler}
+      onSubmit={editHandler}
       className="flex flex-col space-y-6 bg-white p-6"
     >
       <div>
@@ -24,6 +56,8 @@ export default function ProfileEdit({ toggleEditMode }) {
           onChange={changeHandler}
           className="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
         />
+
+        {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
       </div>
 
       <div>
@@ -41,6 +75,9 @@ export default function ProfileEdit({ toggleEditMode }) {
           onChange={changeHandler}
           className="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
         />
+        {errors.username && (
+          <p className="text-red-500 text-sm">{errors.username}</p>
+        )}
       </div>
 
       <div>
@@ -58,6 +95,7 @@ export default function ProfileEdit({ toggleEditMode }) {
           onChange={changeHandler}
           className="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
         />
+        {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
       </div>
 
       <div>
@@ -93,6 +131,9 @@ export default function ProfileEdit({ toggleEditMode }) {
       >
         Cancel
       </button>
+      {errors.general && (
+        <p className="text-red-500 text-sm mt-2">{errors.general}</p>
+      )}
     </form>
   );
 }

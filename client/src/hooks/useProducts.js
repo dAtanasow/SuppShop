@@ -42,7 +42,8 @@ export function useGetOneProduct(productId) {
 }
 
 export function useCreateProduct(productId) {
-    const [isEdit] = useState(!!productId);
+    const [isEdit, setIsEdit] = useState(false);
+    const [error, setError] = useState(null);
     const [productData, setProductData] = useState({
         title: "",
         imgURL: "",
@@ -58,36 +59,86 @@ export function useCreateProduct(productId) {
         warnings: "",
     });
 
+    const [formErrors, setFormErrors] = useState({});
     const navigate = useNavigate();
     const { userId } = useAuthContext();
 
     useEffect(() => {
-        if (!productId) return;
-        (async () => {
-            try {
-                const product = await productsApi.getOne(productId);
-                setProductData(product);
-            } catch (err) {
-                console.error(err.message);
-            }
-        })()
+        if (productId) {
+            setIsEdit(true);
+            (async () => {
+                try {
+                    const product = await productsApi.getOne(productId);
+                    setProductData(product);
+                } catch (err) {
+                    console.error(err.message);
+                    setError("Failed to load product details.");
+                }
+            })()
+        }
     }, [productId]);
 
+    const validate = (values) => {
+        const errors = {};
+        if (!values.title || values.title.length < 3 || !/^[a-zA-Z0-9\s]+$/.test(values.title)) {
+            errors.title = 'Title must be at least 3 characters and contain only letters and numbers';
+        }
+
+        const urlPattern = /^(https?:\/\/)[^\s/$.?#].[^\s]*$/i;
+        if (!values.imgURL || !urlPattern.test(values.imgURL)) {
+            errors.imgURL = 'Please provide a valid URL starting with http:// or https://';
+        }
+
+        if (values.price < 1) {
+            errors.price = 'Price must be at least 1';
+        }
+
+        if (!values.flavour || values.flavour.length < 3 || !/^[a-zA-Z]+$/.test(values.flavour)) {
+            errors.flavour = 'Flavour is required and must be at least 3 letters';
+        }
+
+        if (values.weight < 1) {
+            errors.weight = 'Weight must be at least 10 grams';
+        }
+
+        if (values.servings < 1) {
+            errors.servings = 'Servings must be at least 1';
+        }
+
+        return errors;
+    };
+
     const createOrUpdateProduct = async (values) => {
+        const errors = validate(values);
+        if (Object.keys(errors).length > 0) {
+            setFormErrors(errors);
+            return;
+        }
 
         try {
-            isEdit
-                ? await productsApi.update(productId, values)
-                : await productsApi.create(values);
+            if (isEdit) {
+                await productsApi.update(productId, values);
+            } else {
+                await productsApi.create(values);
+            }
+
             navigate(`/users/${userId}/products`);
         } catch (err) {
             console.error(err.message);
+            setError(
+                isEdit
+                    ? "Failed to update product. Please try again."
+                    : "Failed to create product. Please try again."
+            );
         }
     };
 
     return {
         isEdit,
+        error,
+        formErrors,
         productData,
+        setProductData,
         createOrUpdateProduct,
     };
 };

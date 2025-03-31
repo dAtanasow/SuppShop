@@ -133,15 +133,17 @@ async function logout(req, res) {
 }
 
 async function checkAvailable(req, res) {
-    const { email, username } = req.query;
+    const { email, username, phone, userId } = req.query;
 
     try {
-        const emailTaken = await userModel.findOne({ email });
-        const usernameTaken = await userModel.findOne({ username });
+        const emailTaken = await userModel.findOne({ email, _id: { $ne: userId } });
+        const usernameTaken = await userModel.findOne({ username, _id: { $ne: userId } });
+        const phoneTaken = await userModel.findOne({ phone, _id: { $ne: userId } });
 
         res.json({
             emailTaken: !!emailTaken,
             usernameTaken: !!usernameTaken,
+            phoneTaken: !!phoneTaken
         });
     } catch (error) {
         console.error("Error checking availability:", error);
@@ -170,16 +172,49 @@ const editProfileInfo = async (req, res) => {
         const { username, email, phone, img } = req.body;
         const userId = req.user._id;
 
+        const currentUser = await userModel.findById(userId);
+        if (!currentUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const newEmail = email.trim().toLowerCase();
+        const newUsername = username.trim();
+        const newPhone = phone.trim();
+
+        const currentEmail = currentUser.email ? currentUser.email.trim().toLowerCase() : "";
+        const currentUsername = currentUser.username ? currentUser.username.trim() : "";
+        const currentPhone = currentUser.phone ? currentUser.phone.trim() : "";
+
+        const emailChanged = newEmail !== currentEmail;
+        const usernameChanged = newUsername !== currentUsername;
+        const phoneChanged = newPhone !== currentPhone;
+
+        if (emailChanged) {
+            const emailTaken = await userModel.findOne({ email: newEmail, _id: { $ne: userId } });
+            console.log("Email check:", emailTaken);
+            if (emailTaken) return res.status(400).json({ message: "Email is already taken." });
+        }
+
+        if (usernameChanged) {
+            const usernameTaken = await userModel.findOne({ username: newUsername, _id: { $ne: userId } });
+            console.log("Username check:", usernameTaken);
+            if (usernameTaken) return res.status(400).json({ message: "Username is already taken." });
+        }
+
+        if (phoneChanged) {
+            const phoneTaken = await userModel.findOne({ phone: newPhone, _id: { $ne: userId } });
+            console.log("Phone check:", phoneTaken);
+            if (phoneTaken) return res.status(400).json({ message: "Phone number is already taken." });
+        }
+
         const updatedUser = await userModel.findByIdAndUpdate(userId, {
-            username,
-            email,
-            phone,
+            username: newUsername,
+            email: newEmail,
+            phone: newPhone,
             img
         }, { new: true });
 
-        if (!updatedUser) {
-            return res.status(404).json({ message: 'User not found' });
-        }
+        console.log("Updated user:", updatedUser);
 
         res.status(200).json({
             message: 'Profile updated successfully',
@@ -192,14 +227,11 @@ const editProfileInfo = async (req, res) => {
     }
 };
 
-
-
-
 module.exports = {
     login,
     register,
     logout,
     getUserById,
     editProfileInfo,
-    checkAvailable
+    checkAvailable,
 };

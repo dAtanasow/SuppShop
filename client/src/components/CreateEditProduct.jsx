@@ -1,13 +1,13 @@
 import { useParams } from "react-router-dom";
-import { useForm } from "../hooks/useForm";
 import { useCreateProduct } from "../hooks/useProducts";
+import { useForm } from "../hooks/useForm";
 
 export default function CreateEditProduct() {
   const { productId } = useParams();
-  const { isEdit, productData, createOrUpdateProduct } =
+  const { isEdit, error, productData, createOrUpdateProduct, formErrors } =
     useCreateProduct(productId);
 
-  const { values, changeHandler, errors, submitHandler } = useForm(
+  const { values, changeHandler, submitHandler } = useForm(
     productData,
     createOrUpdateProduct,
     { reinitializeForm: !!productId }
@@ -23,7 +23,15 @@ export default function CreateEditProduct() {
           {isEdit ? "Edit Product" : "Create Product"}
         </h2>
 
-        {errors && <p className="text-red-500 text-center mb-4">{errors}</p>}
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
+        {Object.keys(formErrors).length > 0 && (
+          <div className="text-red-500 text-center mb-4">
+            {Object.values(formErrors).map((err, index) => (
+              <p key={index}>{err}</p>
+            ))}
+          </div>
+        )}
 
         <div className="grid grid-cols-2 gap-4">
           <div>
@@ -42,6 +50,9 @@ export default function CreateEditProduct() {
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
+            {formErrors.title && (
+              <p className="text-red-500 text-sm">{formErrors.title}</p>
+            )}
           </div>
           <div>
             <label
@@ -59,6 +70,9 @@ export default function CreateEditProduct() {
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
+            {formErrors.imgURL && (
+              <p className="text-red-500 text-sm">{formErrors.imgURL}</p>
+            )}
           </div>
 
           <div>
@@ -118,6 +132,9 @@ export default function CreateEditProduct() {
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
+            {formErrors.price && (
+              <p className="text-red-500 text-sm">{formErrors.price}</p>
+            )}
           </div>
 
           <div>
@@ -153,6 +170,9 @@ export default function CreateEditProduct() {
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
+            {formErrors.flavour && (
+              <p className="text-red-500 text-sm">{formErrors.flavour}</p>
+            )}
           </div>
 
           <div>
@@ -171,6 +191,9 @@ export default function CreateEditProduct() {
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
+            {formErrors.weight && (
+              <p className="text-red-500 text-sm">{formErrors.weight}</p>
+            )}
           </div>
 
           <div>
@@ -189,6 +212,9 @@ export default function CreateEditProduct() {
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
+            {formErrors.servings && (
+              <p className="text-red-500 text-sm">{formErrors.servings}</p>
+            )}
           </div>
           <div className="col-span-2">
             <label
