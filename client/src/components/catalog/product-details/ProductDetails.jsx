@@ -1,16 +1,21 @@
 import { Link, useParams } from "react-router-dom";
 import { useState } from "react";
-import { useDeleteProduct, useGetOneProduct } from "../../../hooks/useProducts";
+import { useDeleteProduct } from "../../../hooks/useProducts";
 import { useAuthContext } from "../../../context/AuthContext.js";
 import ToggleSection from "./ToggleSection.jsx";
 import { useAddToCart } from "../../../hooks/useCart.js";
+import ReviewCard from "./ReviewCard.jsx";
+import { useAddReview } from "../../../hooks/useReviews.js";
 
 export default function ProductDetails() {
-  const { userId } = useAuthContext();
   const { productId } = useParams();
-  const [product] = useGetOneProduct(productId);
+  const { userId } = useAuthContext();
   const deleteProduct = useDeleteProduct();
-  const { addToCartHandler, loading } = useAddToCart(productId);
+  const { addReview, product } = useAddReview(productId);
+  const [addToCartHandler, loading, error] = useAddToCart(productId);
+
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
 
   const [isDescriptionOpen, setDescriptionOpen] = useState(false);
   const [isIngredientsOpen, setIngredientsOpen] = useState(false);
@@ -24,7 +29,15 @@ export default function ProductDetails() {
 
   const isAuthor = userId === product?.authorId?._id;
 
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    addReview(rating, comment);
+    setRating(0);
+    setComment("");
+  };
+
   if (loading || !product) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <>
@@ -130,6 +143,51 @@ export default function ProductDetails() {
               Add to cart
             </button>
           )}
+        </div>
+      </div>
+      <div className="max-w-screen-lg m-auto mt-12">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4" />
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold text-gray-800 mb-2">
+            Leave a Rating:
+          </h3>
+          <div className="flex space-x-2">
+            {[1, 2, 3, 4, 5].map((value) => (
+              <span
+                key={value}
+                onClick={() => setRating(value)}
+                className={`cursor-pointer text-3xl ${
+                  rating >= value ? "text-yellow-500" : "text-gray-300"
+                }`}
+              >
+                ★
+              </span>
+            ))}
+          </div>
+          <textarea
+            className="w-full mt-2 p-2 border border-gray-300 rounded-md"
+            placeholder="Write a comment (optional)"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+          />
+          <button
+            onClick={submitHandler}
+            className="w-full mt-4 py-3 bg-blue-500 text-white font-semibold text-lg rounded-lg hover:bg-blue-600"
+          >
+            Submit Vote
+          </button>
+        </div>
+      </div>
+      <div className="max-w-screen mx-auto p-4 mt-12">
+        <h2 className="text-3xl text-center font-semibold text-gray-800 mb-6">
+          Customer Reviews
+        </h2>
+        <div className="m-auto rounded-lg max-w-screen-lg">
+          <div className="space-y-6">
+            {product?.reviews?.map((review) => (
+              <ReviewCard key={review} reviewId={review} />
+            ))}
+          </div>
         </div>
       </div>
     </>
