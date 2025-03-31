@@ -8,11 +8,14 @@ const login = (userData) => request.post(`${BASE_URL}/login`, userData);
 
 const logout = () => request.post(`${BASE_URL}/logout`);
 
+const update = (userData, userId) => request.put(`${BASE_URL}/${userId}/profile`, userData);
+
 
 const userApi = {
     register,
     login,
     logout,
+    update,
 };
 
 export default userApi;
