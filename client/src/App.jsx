@@ -11,6 +11,7 @@ import Logout from "./components/Logout";
 import Catalog from "./components/catalog/Catalog";
 import ProductDetails from "./components/catalog/product-details/ProductDetails";
 import CreateEditProduct from "./components/CreateEditProduct";
+import Profile from "./components/profile/Profile";
 
 function App() {
   return (
@@ -24,6 +25,8 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/logout" element={<Logout />} />
+            <Route path="/profile" element={<Profile />} />
+
             <Route path="/catalog" element={<Catalog />} />
             <Route path="/catalog/:productId" element={<ProductDetails />} />
             <Route path="/create" element={<CreateEditProduct />} />
