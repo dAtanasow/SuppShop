@@ -1,11 +1,14 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useState } from "react";
-import { useGetOneProduct } from "../../../hooks/useProducts";
+import { useDeleteProduct, useGetOneProduct } from "../../../hooks/useProducts";
+import { useAuthContext } from "../../../context/AuthContext.js";
 import ToggleSection from "./ToggleSection.jsx";
 
 export default function ProductDetails() {
+  const { userId } = useAuthContext();
   const { productId } = useParams();
   const [product] = useGetOneProduct(productId);
+  const deleteProduct = useDeleteProduct();
 
   const [isDescriptionOpen, setDescriptionOpen] = useState(false);
   const [isIngredientsOpen, setIngredientsOpen] = useState(false);
@@ -16,6 +19,8 @@ export default function ProductDetails() {
   const toggleIngredients = () => setIngredientsOpen(!isIngredientsOpen);
   const toggleWarnings = () => setWarningsOpen(!isWarningsOpen);
   const toggleDirections = () => setDirectionsOpen(!isDirectionsOpen);
+
+  const isAuthor = userId === product?.authorId?._id;
 
   if (!product) return <div>Loading...</div>;
 
@@ -99,6 +104,27 @@ export default function ProductDetails() {
             isOpen={isWarningsOpen}
             toggle={toggleWarnings}
           />
+
+          {isAuthor ? (
+            <>
+              <Link to={`/catalog/${productId}/edit`}>
+                <button className="w-full mt-4 py-3 bg-yellow-500 text-white font-semibold text-lg rounded-lg hover:bg-yellow-600 focus:outline-none">
+                  Edit
+                </button>
+              </Link>
+
+              <button
+                className="w-full mt-4 py-3 bg-red-500 text-white font-semibold text-lg rounded-lg hover:bg-red-600 focus:outline-none"
+                onClick={() => deleteProduct(productId)}
+              >
+                Delete
+              </button>
+            </>
+          ) : (
+            <button className="w-full mt-4 py-3 bg-blue-500 text-white font-semibold text-lg rounded-lg hover:bg-blue-600 focus:outline-none">
+              Add to cart
+            </button>
+          )}
         </div>
       </div>
     </>

@@ -37,7 +37,7 @@ export function useGetOneProduct(productId) {
         })();
     }, [productId]);
 
-    return [product, setProduct];
+    return [product];
 }
 
 export function useCreateProduct(productId) {
@@ -78,8 +78,6 @@ export function useCreateProduct(productId) {
             isEdit
                 ? await productsApi.update(productId, values)
                 : await productsApi.create(values);
-
-
             navigate(`/users/${userId}/products`);
         } catch (err) {
             console.error(err.message);
@@ -92,3 +90,19 @@ export function useCreateProduct(productId) {
         createOrUpdateProduct,
     };
 };
+
+export function useDeleteProduct() {
+    const navigate = useNavigate();
+    const { userId } = useAuthContext();
+
+    const deleteProduct = async (productId) => {
+        const isConfirmed = confirm('Are you sure you want to delete this product?')
+        if (!isConfirmed) {
+            return;
+        }
+        await productsApi.remove(productId);
+        navigate(`/users/${userId}/products`);
+    };
+
+    return deleteProduct;
+}
