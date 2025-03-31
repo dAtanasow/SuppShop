@@ -3,8 +3,7 @@ import { useGetReview } from "../../../hooks/useReviews";
 export default function ReviewCard({ reviewId }) {
   const { review, user, handleLike, handleDislike } = useGetReview(reviewId);
 
-  if (!review) return <div>Loading...</div>;
-
+  if (!review || !user) return <div>Loading...</div>;
   return (
     <div className="flex items-start space-x-8 p-4 bg-gray-50 rounded-lg shadow-sm hover:bg-gray-100 transition-all">
       <div>

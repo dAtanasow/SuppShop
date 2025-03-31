@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDeleteProduct } from "../../../hooks/useProducts";
 import { useAuthContext } from "../../../context/AuthContext.js";
 import ToggleSection from "./ToggleSection.jsx";
@@ -8,14 +8,14 @@ import ReviewCard from "./ReviewCard.jsx";
 import { useAddReview } from "../../../hooks/useReviews.js";
 
 export default function ProductDetails() {
+  const [reviews, setReviews] = useState([]);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
   const { productId } = useParams();
   const { userId } = useAuthContext();
   const deleteProduct = useDeleteProduct();
-  const { addReview, product } = useAddReview(productId);
   const [addToCartHandler, loading, error] = useAddToCart(productId);
-
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState("");
+  const { addReview, product } = useAddReview(productId, setReviews);
 
   const [isDescriptionOpen, setDescriptionOpen] = useState(false);
   const [isIngredientsOpen, setIngredientsOpen] = useState(false);
@@ -27,11 +27,17 @@ export default function ProductDetails() {
   const toggleWarnings = () => setWarningsOpen(!isWarningsOpen);
   const toggleDirections = () => setDirectionsOpen(!isDirectionsOpen);
 
+  useEffect(() => {
+    if (product) {
+      setReviews(product.reviews || []);
+    }
+  }, [product]);
+
   const isAuthor = userId === product?.authorId?._id;
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    addReview(rating, comment);
+    await addReview(rating, comment);
     setRating(0);
     setComment("");
   };
@@ -147,6 +153,7 @@ export default function ProductDetails() {
       </div>
       <div className="max-w-screen-lg m-auto mt-12">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4" />
+
         <div className="mb-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-2">
             Leave a Rating:
@@ -184,7 +191,7 @@ export default function ProductDetails() {
         </h2>
         <div className="m-auto rounded-lg max-w-screen-lg">
           <div className="space-y-6">
-            {product?.reviews?.map((review) => (
+            {reviews?.map((review) => (
               <ReviewCard key={review} reviewId={review} />
             ))}
           </div>

@@ -1,12 +1,17 @@
 const productModel = require("../models/productModel");
 const userModel = require("../models/userModel");
 const reviewModel = require("../models/reviewModel");
+const mongoose = require('mongoose');
 
 async function getReview(req, res) {
     const { reviewId } = req.params
 
     if (!reviewId) {
         return res.status(400).json({ error: 'Review ID is required' });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(reviewId)) {
+        return res.status(400).json({ message: 'Invalid review ID' });
     }
 
     try {
@@ -27,7 +32,13 @@ async function getProductReviews(req, res) {
     try {
         const product = await productModel
             .findById(productId)
-            .populate('reviews.userId', 'username');
+            .populate({
+                path: 'reviews',
+                populate: {
+                    path: 'userId',
+                    select: 'username'
+                }
+            });
 
         if (!product) {
             return res.status(404).json({ message: 'Product not found' });
@@ -96,7 +107,10 @@ async function postReview(req, res) {
 
         await product.save();
 
-        res.status(201).json(product);
+        res.status(201).json({
+            product,
+            review: newReview
+        });
     } catch (error) {
         console.error('Error posting review:', error);
         res.status(500).json({ message: 'Server error' });
@@ -168,5 +182,5 @@ module.exports = {
     getProductReviews,
     postReview,
     like,
-    dislike
+    dislike,
 }

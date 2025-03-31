@@ -9,12 +9,12 @@ export default function Header() {
   return (
     <header className="bg-white shadow">
       <nav className="flex items-center justify-between p-2 text-lg">
-        <div className="flex w-[20%] pl-5 text-xl">
+        <div className="flex w-[25%] pl-5 text-xl">
           <Link to="/">
             supp<span className="text-green-700">shop</span>
           </Link>
         </div>
-        <ul className="flex w-[60%] gap-20 justify-center">
+        <ul className="flex w-[50%] gap-15 justify-center">
           <li className="relative group">
             <p className="hover:text-gray-700 cursor-pointer">Category</p>
             <CategoryList />
@@ -53,19 +53,26 @@ export default function Header() {
           )}
         </ul>
 
-        <div className="flex w-[20%] justify-end gap-10 pr-5">
+        <div className="flex w-[25%] justify-end gap-4 pr-5">
           {isAuthenticate ? (
             <>
               <Link to="/create">Add Product</Link>
-              <Link to="/profile">Profile</Link>
-              <Link to="/logout">Logout</Link>
+              <Link className="border-l pl-3" to="/profile">
+                Profile
+              </Link>
+              <Link className="border-l pl-3" to="/logout">
+                Logout
+              </Link>
             </>
           ) : (
             <>
-              <Link to="/login" className="hover:text-gray-700">
+              <Link to="/login" className="hover:text-gray-700 ">
                 Login
               </Link>
-              <Link to="/register" className="hover:text-gray-700">
+              <Link
+                to="/register"
+                className="hover:text-gray-700 border-l pl-3"
+              >
                 Register
               </Link>
             </>

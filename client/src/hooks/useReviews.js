@@ -49,8 +49,6 @@ export function useGetReview(reviewId) {
         fetchReview();
     }, [reviewId, userId]);
 
-
-
     const handleLike = async () => {
         try {
             const updatedReview = await reviewsApi.like(reviewId);
@@ -90,45 +88,39 @@ export function useGetReview(reviewId) {
 }
 
 
-export function useAddReview(productId) {
+export function useAddReview(productId, setReviews) {
     const { userId } = useAuthContext();
-    const [error, setError] = useState(null);
-    const [product, setProduct] = useGetOneProduct(productId);
-
-    const hasVoted = product?.reviews?.some(
-        (review) => review?.authorId === userId
-    );
+    const [product] = useGetOneProduct(productId);
 
     const addReview = async (rating, comment) => {
         if (!userId) {
-            setError("You need to log in to vote.");
-            return;
-        }
-        if (hasVoted) {
-            setError("You have already voted for this product.");
+            alert("You need to log in to vote.");
             return;
         }
         if (!rating) {
-            setError("Please select a rating");
+            alert("Please select a rating");
             return;
         }
-
         try {
             const reviewData = {
                 rating,
                 comment: comment ? comment : ""
             };
-            const updatedProduct = await reviewsApi.create(productId, reviewData);
-            setProduct(updatedProduct);
+            const newReview = await reviewsApi.create(productId, reviewData);
+            setReviews((prevReviews) => [
+                ...prevReviews,
+                { ...newReview, userId },
+            ]);
             alert("Thank you for your review!");
         } catch (error) {
-            setError(error.message);
+            if (error.message === 'You have already posted a review for this product.') {
+                alert('You have already posted a review for this product.')
+            }
         }
     }
 
     return {
         addReview,
-        error,
         product
     };
 }
