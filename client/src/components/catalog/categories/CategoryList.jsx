@@ -1,4 +1,4 @@
-import CategoryListItem from "./CategoryListItem";
+import CategoryItem from "./CategoryItem";
 
 export default function CategoryList() {
   const categories = [
@@ -143,12 +143,17 @@ export default function CategoryList() {
         "https://www.iceshaker.com/cdn/shop/files/36BLACK_36ozIceShaker_Black_3qtr.jpg?v=1694800764&width=2048",
       path: "/catalog?category=shakers",
     },
+    {
+      name: "Green foods",
+      image: "https://m.media-amazon.com/images/I/61vs1OlHPdL.jpg",
+      path: "/catalog?category=green foods",
+    },
   ];
 
   return (
     <ul className="flex w-240 max-h-150 p-10 flex-wrap justify-evenly overflow-y-auto absolute -left-77 hidden bg-white rounded-xl shadow-md group-hover:flex">
       {categories.map((category) => (
-        <CategoryListItem
+        <CategoryItem
           key={category.name}
           name={category.name}
           img={category.image}

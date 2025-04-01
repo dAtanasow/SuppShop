@@ -25,14 +25,6 @@ export default function CreateEditProduct() {
 
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
-        {Object.keys(formErrors).length > 0 && (
-          <div className="text-red-500 text-center mb-4">
-            {Object.values(formErrors).map((err, index) => (
-              <p key={index}>{err}</p>
-            ))}
-          </div>
-        )}
-
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label
@@ -118,42 +110,54 @@ export default function CreateEditProduct() {
 
           <div>
             <label
-              htmlFor="price"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Price
-            </label>
-            <input
-              type="number"
-              id="price"
-              name="price"
-              value={values.price}
-              onChange={changeHandler}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            {formErrors.price && (
-              <p className="text-red-500 text-sm">{formErrors.price}</p>
-            )}
-          </div>
-
-          <div>
-            <label
               htmlFor="brand"
               className="block text-sm font-medium text-gray-700"
             >
               Brand
             </label>
-            <input
-              type="text"
+            <select
               id="brand"
               name="brand"
               value={values.brand}
               onChange={changeHandler}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 border border-gray-300 rounded-lg"
               required
-            />
+            >
+              <option value="6AM Run">6AM Run</option>
+              <option value="All Black Everything">All Black Everything</option>
+              <option value="Ancient">Ancient</option>
+              <option value="Barebells">Barebells</option>
+              <option value="Bodybuilding.com Signature">
+                Bodybuilding.com Signature
+              </option>
+              <option value="BPI Sports">BPI Sports</option>
+              <option value="BSN">BSN</option>
+              <option value="Cellucor">Cellucor</option>
+              <option value="Dymatize">Dymatize</option>
+              <option value="EHP">EHP</option>
+              <option value="Evlution">Evlution</option>
+              <option value="Happy Hydrate">Happy Hydrate</option>
+              <option value="Ice Shaker">Ice Shaker</option>
+              <option value="Jocko Fuel">Jocko Fuel</option>
+              <option value="Kaged">Kaged</option>
+              <option value="Kodagenix">Kodagenix</option>
+              <option value="Me Today">Me Today</option>
+              <option value="MRI Performance">MRI Performance</option>
+              <option value="MuscleSport">MuscleSport</option>
+              <option value="Mutant">Mutant</option>
+              <option value="Nutrex">Nutrex</option>
+              <option value="PANDA">PANDA</option>
+              <option value="Pro Supps">Pro Supps</option>
+              <option value="Prolab">Prolab</option>
+              <option value="REMIX">REMIX</option>
+              <option value="Ryse">Ryse</option>
+              <option value="SNAP">SNAP</option>
+              <option value="Unmatched">Unmatched</option>
+              <option value="Vitargo">Vitargo</option>
+              <option value="Xtend">Xtend</option>
+            </select>
           </div>
+
           <div>
             <label
               htmlFor="flavour"
@@ -172,6 +176,27 @@ export default function CreateEditProduct() {
             />
             {formErrors.flavour && (
               <p className="text-red-500 text-sm">{formErrors.flavour}</p>
+            )}
+          </div>
+
+          <div>
+            <label
+              htmlFor="price"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Price
+            </label>
+            <input
+              type="number"
+              id="price"
+              name="price"
+              value={values.price}
+              onChange={changeHandler}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+            {formErrors.price && (
+              <p className="text-red-500 text-sm">{formErrors.price}</p>
             )}
           </div>
 
