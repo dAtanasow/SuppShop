@@ -20,8 +20,6 @@ dbConnector()
       methods: ['GET', 'POST', 'PUT', 'DELETE'],
     }));
 
-    app.options('*', cors());
-
     app.use('/api', apiRouter);
 
     app.use(errorHandler);

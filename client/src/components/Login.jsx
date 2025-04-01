@@ -1,23 +1,34 @@
 import { useNavigate } from "react-router-dom";
 import { useLogin } from "../hooks/useAuth";
+import { useForm } from "../hooks/useForm";
 
 export default function Login() {
-  const { login, values, changeHandler, errors, pending } = useLogin();
   const navigate = useNavigate();
+  const { login, errors, pending } = useLogin();
 
-  const loginHandler = async (e) => {
-    e.preventDefault();
-    if (pending) return;
-    await login(values);
-    navigate("/");
-  };
-  
+  const { values, changeHandler, submitHandler } = useForm(
+    { email: "", password: "" },
+    async (values) => {
+      try {
+        const authData = await login(values.email, values.password);
+        if (authData) {
+          navigate("/");
+        }
+      } catch (err) {
+        console.error("Error during login:", err.message);
+      }
+    }
+  );
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <form
-        onSubmit={loginHandler}
+        onSubmit={submitHandler}
         className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md"
       >
+        {errors?.general && (
+          <p className="text-red-500 text-center mb-4">{errors.general}</p>
+        )}
         <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
         <div className="mb-4">
           <label

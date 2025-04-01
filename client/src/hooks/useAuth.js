@@ -4,9 +4,9 @@ import userApi from "../аpi/auth-api";
 import { useState } from "react";
 
 export const useRegister = () => {
-    const { changeAuthState } = useAuthContext()
+    const { changeAuthState, userId } = useAuthContext()
 
-    const [error, setError] = useState({});
+    const [errors, setError] = useState({});
     const [pending, setPending] = useState(false);
 
     const validateForm = (values) => {
@@ -39,14 +39,19 @@ export const useRegister = () => {
         return errors;
     };
 
-    const checkIfEmailOrUsernameTaken = async (email, username) => {
+    const checkIfEmailOrUsernameTaken = async (email, username, phone) => {
+        if (!email || !username || !phone) {
+            console.log("Missing required fields");
+            return;
+        }
         try {
-            const data = await userApi.checkAvailable(email, username);
+            const data = await userApi.checkAvailable(email, username, phone, userId);
 
-            if (data.emailTaken || data.usernameTaken) {
+            if (data.emailTaken || data.usernameTaken || data.phoneTaken) {
                 setError({
                     email: data.emailTaken ? "Email is already taken." : "",
                     username: data.usernameTaken ? "Username is already taken." : "",
+                    phone: data.phoneTaken ? "Phone already taken" : ""
                 });
                 return false;
             }
@@ -81,15 +86,15 @@ export const useRegister = () => {
         register: registerHandler,
         validateForm,
         checkIfEmailOrUsernameTaken,
+        setError,
         pending,
-        error,
-        setError
+        errors,
     };
 }
 
 export const useLogin = () => {
     const { changeAuthState } = useAuthContext();
-    const [error, setError] = useState(null);
+    const [errors, setError] = useState(null);
     const [pending, setPending] = useState(false);
 
     const validateForm = (email, password) => {
@@ -137,8 +142,8 @@ export const useLogin = () => {
     };
 
     return {
-        loginHandler,
-        error,
+        login: loginHandler,
+        errors,
         pending,
     };
 };

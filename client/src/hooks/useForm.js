@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export function useForm(initialValues, submitCallback, options = {}) {
+export function useForm(initialValues, submitCallback, options = { reinitializeForm: false }) {
     const [values, setValues] = useState(initialValues);
     const [errors, setError] = useState([]);
     const [pending, setPending] = useState(false);

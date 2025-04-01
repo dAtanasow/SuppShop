@@ -18,6 +18,7 @@ export async function requester(method, url, data) {
         options.headers['Authorization'] = `Bearer ${accessToken}`;
 
         if (data) {
+            console.log("Sending data:", data);
             options.headers['Content-Type'] = 'application/json';
             options.body = JSON.stringify(data);
         }

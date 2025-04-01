@@ -12,8 +12,6 @@ const removePassword = (data) => {
 
 async function register(req, res, next) {
     const { email, username, phone, password, rePass } = req.body;
-    console.log(req.body);
-
 
     if (password !== rePass) {
         return res.status(400).send({ message: 'Passwords do not match!' });
@@ -52,9 +50,7 @@ async function register(req, res, next) {
             let field = err.message.split("index: ")[1];
             field = field.split(" dup key")[0];
             field = field.substring(0, field.lastIndexOf("_"));
-
-            res.status(409)
-                .send({ message: `This ${field} is already registered!` });
+            res.status(409).send({ message: `This ${field} is already registered!` });
             return;
         }
 
@@ -65,6 +61,10 @@ async function register(req, res, next) {
 async function login(req, res, next) {
     try {
         const { email, password } = req.body;
+        
+        if (!email || !password) {
+            return res.status(400).json({ message: 'Email and password are required' });
+        }
 
         const user = await userModel.findOne({ email });
 
@@ -136,9 +136,12 @@ async function checkAvailable(req, res) {
     const { email, username, phone, userId } = req.query;
 
     try {
-        const emailTaken = await userModel.findOne({ email, _id: { $ne: userId } });
-        const usernameTaken = await userModel.findOne({ username, _id: { $ne: userId } });
-        const phoneTaken = await userModel.findOne({ phone, _id: { $ne: userId } });
+        const query = {};
+        if (userId) query.userId = { $ne: userId };
+
+        const emailTaken = email ? await userModel.findOne({ email, ...query }) : null;
+        const usernameTaken = username ? await userModel.findOne({ username, ...query }) : null;
+        const phoneTaken = phone ? await userModel.findOne({ phone, ...query }) : null;
 
         res.json({
             emailTaken: !!emailTaken,

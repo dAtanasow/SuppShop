@@ -1,21 +1,65 @@
 import { useNavigate } from "react-router-dom";
 import { useRegister } from "../hooks/useAuth";
+import { useForm } from "../hooks/useForm";
+
+const initialValues = {
+  email: "",
+  username: "",
+  phone: "",
+  password: "",
+  rePass: "",
+};
 
 export default function Register() {
-  const { register, values, changeHandler, errors, pending } = useRegister();
+  const {
+    register,
+    errors,
+    pending,
+    validateForm,
+    setError,
+    checkIfEmailOrUsernameTaken,
+  } = useRegister();
+
   const navigate = useNavigate();
 
-  const registerHandler = async (e) => {
-    e.preventDefault();
+  const registerHandler = async () => {
     if (pending) return;
-    await register(values);
-    navigate("/");
+
+    const validationErrors = validateForm(values);
+    if (Object.keys(validationErrors).length > 0) {
+      setError(validationErrors);
+      return;
+    }
+
+    const isAvailable = await checkIfEmailOrUsernameTaken(
+      values.email,
+      values.username,
+      values.phone
+    );
+    if (!values.email || !values.username || !values.phone) {
+      return;
+    }
+
+    if (!isAvailable) return;
+
+    try {
+      await register(values);
+      navigate("/");
+    } catch (err) {
+      console.log(err.message);
+      setError({ server: "Registration failed. Please try again." });
+    }
   };
+
+  const { values, changeHandler, submitHandler } = useForm(
+    initialValues,
+    registerHandler
+  );
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <form
-        onSubmit={registerHandler}
+        onSubmit={submitHandler}
         className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md"
       >
         <h2 className="text-2xl font-bold text-center mb-6">Register</h2>
