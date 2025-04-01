@@ -11,36 +11,36 @@ export function useProfileEdit(toggleEditMode) {
 
     useEffect(() => {
         setInitialValues({
-            username,
-            email,
-            phone,
-            img,
+            username: username || "",
+            email: email || "",
+            phone: phone || "",
+            img: img || "",
         });
     }, [email, username, phone, img]);
 
     const validateForm = (values) => {
-        const errors = {};
+        const newErrors = {};
 
         if (!values.email) {
-            errors.email = "Email is required.";
+            newErrors.email = "Email is required.";
         } else if (!/\S+@\S+\.\S+/.test(values.email)) {
-            errors.email = "Invalid email format.";
+            newErrors.email = "Invalid email format.";
         }
 
         if (!values.username) {
-            errors.username = "Username is required.";
+            newErrors.username = "Username is required.";
         } else if (values.username.length < 5) {
-            errors.username = "Username should be at least 5 characters.";
+            newErrors.username = "Username should be at least 5 characters.";
         }
 
         if (!values.phone) {
-            errors.phone = "Phone is required.";
+            newErrors.phone = "Phone is required.";
+        } else if (!/^08\d{8}$/.test(values.phone)) {
+            newErrors.phone = "Phone must start with 08 and contain 10 digits.";
         }
 
-        if (values.phone && !/^08\d{8}$/.test(values.phone)) {
-            errors.phone = "Phone must start with 08 and contain 10 digits.";
-        }
-        return errors;
+        setError(newErrors);
+        return Object.keys(newErrors).length === 0;
     };
 
     const checkIfEmailOrUsernameTaken = async (email, username, phone) => {
@@ -48,20 +48,21 @@ export function useProfileEdit(toggleEditMode) {
             const data = await userApi.checkAvailable(email, username, phone, userId);
 
             if (data.emailTaken || data.usernameTaken || data.phoneTaken) {
-                setError({
+                setError((prev) => ({
+                    ...prev,
                     email: data.emailTaken ? "Email is already taken." : "",
                     username: data.usernameTaken ? "Username is already taken." : "",
-                    phone: data.phoneTaken ? "Phone is already taken." : ""
-                });
+                    phone: data.phoneTaken ? "Phone is already taken." : "",
+                }));
                 return false;
             }
             return true;
         } catch (err) {
-            setError({
-                server:
-                    "Server error. Please check your connection or try again later.",
-            });
-            console.log(err.message);
+            setError((prev) => ({
+                ...prev,
+                server: "Server error. Please check your connection or try again later.",
+            }));
+            console.log("Error checking availability:", err.message);
             return false;
         }
     };
@@ -70,6 +71,24 @@ export function useProfileEdit(toggleEditMode) {
         initialValues,
         async (formData) => {
             if (!validateForm(formData)) return;
+
+            const hasChanges = Object.keys(initialValues).some(
+                (key) => formData[key].trim() !== initialValues[key].trim()
+            );
+
+            if (!hasChanges) {
+                console.log("No changes detected. Skipping update request.");
+                toggleEditMode();
+                return;
+            }
+
+            const isAvailable = await checkIfEmailOrUsernameTaken(
+                formData.email,
+                formData.username,
+                formData.phone
+            );
+
+            if (!isAvailable) return;
 
             const updatedUser = await userApi.update(formData, userId);
             changeAuthState(updatedUser);
@@ -80,6 +99,7 @@ export function useProfileEdit(toggleEditMode) {
 
     const handleChange = async (e) => {
         changeHandler(e);
+        setError((prev) => ({ ...prev, [e.target.name]: "" })); // Изчистване на грешката при промяна
         validateForm({ ...values, [e.target.name]: e.target.value });
     };
 

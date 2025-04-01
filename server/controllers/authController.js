@@ -61,7 +61,7 @@ async function register(req, res, next) {
 async function login(req, res, next) {
     try {
         const { email, password } = req.body;
-        
+
         if (!email || !password) {
             return res.status(400).json({ message: 'Email and password are required' });
         }
@@ -133,26 +133,39 @@ async function logout(req, res) {
 }
 
 async function checkAvailable(req, res) {
-    const { email, username, phone, userId } = req.query;
+    let { email, username, phone, userId } = req.query;
 
     try {
-        const query = {};
-        if (userId) query.userId = { $ne: userId };
+        let user = null;
+        if (userId && userId !== "null") {
+            user = await userModel.findById(userId);
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+        }
 
-        const emailTaken = email ? await userModel.findOne({ email, ...query }) : null;
-        const usernameTaken = username ? await userModel.findOne({ username, ...query }) : null;
-        const phoneTaken = phone ? await userModel.findOne({ phone, ...query }) : null;
+        let emailTaken = false;
+        let usernameTaken = false;
+        let phoneTaken = false;
 
-        res.json({
-            emailTaken: !!emailTaken,
-            usernameTaken: !!usernameTaken,
-            phoneTaken: !!phoneTaken
-        });
+        if (email) {
+            emailTaken = !!(await userModel.findOne({ email, _id: { $ne: userId } }));
+        }
+        if (username) {
+            usernameTaken = !!(await userModel.findOne({ username, _id: { $ne: userId } }));
+        }
+        if (phone) {
+            phoneTaken = !!(await userModel.findOne({ phone, _id: { $ne: userId } }));
+        }
+
+        res.json({ emailTaken, usernameTaken, phoneTaken });
+
     } catch (error) {
         console.error("Error checking availability:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 }
+
 
 
 

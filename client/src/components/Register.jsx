@@ -43,7 +43,14 @@ export default function Register() {
     if (!isAvailable) return;
 
     try {
-      await register(values);
+      await register(
+        values.email,
+        values.username,
+        values.phone,
+        values.password,
+        values.rePass
+      );
+
       navigate("/");
     } catch (err) {
       console.log(err.message);
