@@ -72,8 +72,14 @@ export function useProfileEdit(toggleEditMode) {
         async (formData) => {
             if (!validateForm(formData)) return;
 
+            const trimmedFormData = Object.fromEntries(
+                Object.entries(formData).map(([key, value]) =>
+                    typeof value === "string" ? [key, value.trim()] : [key, value]
+                )
+            );
+
             const hasChanges = Object.keys(initialValues).some(
-                (key) => formData[key].trim() !== initialValues[key].trim()
+                (key) => trimmedFormData[key] !== initialValues[key].trim()
             );
 
             if (!hasChanges) {
@@ -83,14 +89,14 @@ export function useProfileEdit(toggleEditMode) {
             }
 
             const isAvailable = await checkIfEmailOrUsernameTaken(
-                formData.email,
-                formData.username,
-                formData.phone
+                trimmedFormData.email,
+                trimmedFormData.username,
+                trimmedFormData.phone
             );
 
             if (!isAvailable) return;
 
-            const updatedUser = await userApi.update(formData, userId);
+            const updatedUser = await userApi.update(trimmedFormData, userId);
             changeAuthState(updatedUser);
             toggleEditMode();
         },
@@ -99,7 +105,7 @@ export function useProfileEdit(toggleEditMode) {
 
     const handleChange = async (e) => {
         changeHandler(e);
-        setError((prev) => ({ ...prev, [e.target.name]: "" })); // Изчистване на грешката при промяна
+        setError((prev) => ({ ...prev, [e.target.name]: "" }));
         validateForm({ ...values, [e.target.name]: e.target.value });
     };
 

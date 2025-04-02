@@ -80,20 +80,28 @@ export function useCreateProduct(productId) {
 
     const validate = (values) => {
         const errors = {};
-        if (!values.title || values.title.length < 3 || !/^[a-zA-Z0-9\s]+$/.test(values.title)) {
+        if (!values.title.trim() || values.title.trim().length < 3 || !/^[a-zA-Z0-9\s]+$/.test(values.title)) {
             errors.title = 'Title must be at least 3 characters and contain only letters and numbers';
         }
 
         const urlPattern = /^(https?:\/\/)[^\s/$.?#].[^\s]*$/i;
-        if (!values.imgURL || !urlPattern.test(values.imgURL)) {
+        if (!values.imgURL.trim() || !urlPattern.test(values.imgURL.trim())) {
             errors.imgURL = 'Please provide a valid URL starting with http:// or https://';
+        }
+
+        if (!values.category) {
+            errors.category = 'Category is required';
+        }
+
+        if (!values.brand) {
+            errors.brand = 'Brand is required';
         }
 
         if (values.price < 1) {
             errors.price = 'Price must be at least 1';
         }
 
-        if (!values.flavour || values.flavour.length < 3 || !/^[a-zA-Z]+$/.test(values.flavour)) {
+        if (!values.flavour.trim() || values.flavour.trim().length < 3 || !/^[a-zA-Z]+$/.test(values.flavour)) {
             errors.flavour = 'Flavour is required and must be at least 3 letters';
         }
 
@@ -115,11 +123,17 @@ export function useCreateProduct(productId) {
             return;
         }
 
+        const trimmedValues = Object.fromEntries(
+            Object.entries(values).map(([key, value]) =>
+                typeof value === "string" ? [key, value.trim()] : [key, value]
+            )
+        );
+
         try {
             if (isEdit) {
-                await productsApi.update(productId, values);
+                await productsApi.update(productId, trimmedValues);
             } else {
-                await productsApi.create(values);
+                await productsApi.create(trimmedValues);
             }
 
             navigate(`/users/${userId}/products`);

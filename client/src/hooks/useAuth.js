@@ -68,8 +68,23 @@ export const useRegister = () => {
     };
 
     const registerHandler = async (email, username, phone, password, rePass) => {
+
+        email = email.trim();
+        username = username.trim();
+        phone = phone.trim();
+        password = password.trim();
+        rePass = rePass.trim();
+
         setPending(true);
         setError({});
+
+        const validationErrors = validateForm({ email, username, phone, password, rePass });
+        if (Object.keys(validationErrors).length > 0) {
+            setError(validationErrors);
+            setPending(false);
+            return;
+        }
+
         try {
             const authData = await userApi.register(email, username, phone, password, rePass);
             changeAuthState(authData);
@@ -117,6 +132,9 @@ export const useLogin = () => {
         if (pending) return;
         setPending(true);
         setError({});
+
+        email = email.trim();
+        password = password.trim();
 
         const validationErrors = validateForm(email, password);
         if (Object.keys(validationErrors).length > 0) {

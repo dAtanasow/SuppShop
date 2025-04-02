@@ -25,6 +25,14 @@ export default function CreateEditProduct() {
 
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
+        {Object.keys(formErrors).length > 0 && (
+          <div className="text-red-500 text-center mb-4">
+            {Object.values(formErrors).map((err, index) => (
+              <p key={index}>{err}</p>
+            ))}
+          </div>
+        )}
+
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label
@@ -82,6 +90,9 @@ export default function CreateEditProduct() {
               className="w-full p-3 border border-gray-300 rounded-lg"
               required
             >
+              <option value="" disabled>
+                Select category
+              </option>
               <option value="bcaa">BCAA</option>
               <option value="bone health">Bone Health</option>
               <option value="caffeine">Caffeine</option>
@@ -123,6 +134,9 @@ export default function CreateEditProduct() {
               className="w-full p-3 border border-gray-300 rounded-lg"
               required
             >
+              <option value="" disabled>
+                Select brand
+              </option>
               <option value="6AM Run">6AM Run</option>
               <option value="All Black Everything">All Black Everything</option>
               <option value="Ancient">Ancient</option>
