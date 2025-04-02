@@ -82,29 +82,29 @@ export default function CreateEditProduct() {
               className="w-full p-3 border border-gray-300 rounded-lg"
               required
             >
-              <option value="protein">Protein</option>
-              <option value="protein bars">Protein Bars</option>
+              <option value="bcaa">BCAA</option>
+              <option value="bone health">Bone Health</option>
+              <option value="caffeine">Caffeine</option>
+              <option value="cla">CLA</option>
+              <option value="collagen">Collagen</option>
+              <option value="creatine">Creatine</option>
+              <option value="citrulline">Citrulline</option>
+              <option value="diuretics">Diuretics</option>
+              <option value="energy drink">Energy Drink</option>
+              <option value="equipment">Equipment</option>
+              <option value="fat burner">Fat Burner</option>
+              <option value="fish oil">Fish Oil</option>
               <option value="gainer">Gainer</option>
               <option value="glutamine">Glutamine</option>
-              <option value="bcaa">BCAA</option>
-              <option value="creatine">Creatine</option>
-              <option value="fat burner">Fat Burner</option>
               <option value="L-carnitine">L-Carnitine</option>
-              <option value="Citrulline">Citrulline</option>
-              <option value="pre workout">Pre Workout</option>
-              <option value="caffeine">Caffeine</option>
-              <option value="energy drink">Energy Drink</option>
-              <option value="testosterone booster">Testosterone Booster</option>
-              <option value="diuretics">Diuretics</option>
               <option value="multivitamins">Multivitamins</option>
-              <option value="fish oil">Fish Oil</option>
+              <option value="pre workout">Pre Workout</option>
               <option value="probiotics">Probiotics</option>
-              <option value="bone health">Bone Health</option>
-              <option value="collagen">Collagen</option>
-              <option value="cla">CLA</option>
-              <option value="superfoods">Superfoods</option>
-              <option value="equipment">Equipment</option>
+              <option value="protein">Protein</option>
+              <option value="protein bars">Protein Bars</option>
               <option value="shakers">Shakers</option>
+              <option value="superfoods">Superfoods</option>
+              <option value="testosterone booster">Testosterone Booster</option>
             </select>
           </div>
 
