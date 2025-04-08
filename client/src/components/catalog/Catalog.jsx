@@ -12,7 +12,7 @@ export default function Catalog() {
   if (loading) return <h3>Loading...</h3>;
 
   return (
-    <section className="flex flex-col items-center">
+    <section className="flex flex-col justify-center">
       <h1 className="flex text-3xl justify-center p-3">
         {category
           ? category.toUpperCase()
@@ -20,9 +20,9 @@ export default function Catalog() {
           ? brand.toUpperCase()
           : "All Products"}
       </h1>
-      <div className="flex gap-10 flex-wrap justify-between p-5 w-[80vw]">
+      <div className="flex gap-20 flex-wrap justify-start pt-5 w-[80vw]">
         {error ? (
-          <h3 className="w-full text-center text-3xl">{error}</h3>
+          <h3 className="w-full pr-10 text-center text-3xl">{error}</h3>
         ) : (
           products.map((product) => <Product key={product._id} {...product} />)
         )}

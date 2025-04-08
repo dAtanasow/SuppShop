@@ -19,7 +19,7 @@ export default function CategoryList() {
       path: "/catalog?category=caffeine",
     },
     {
-      name: "Carnitine",
+      name: "Citrulline",
       image: "https://www.silabg.com/uf/product/18111_pm_eb_citrulline.jpg",
       path: "/catalog?category=citrulline",
     },
@@ -69,7 +69,7 @@ export default function CategoryList() {
       name: "Fish Oil",
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLP2JkOv_aRx9sP5LovAbll8vKJ3APl0HW-w&s",
-      path: "/catalog?category=fish Oil",
+      path: "/catalog?category=fish oil",
     },
     {
       name: "Gainer",
@@ -104,7 +104,7 @@ export default function CategoryList() {
       name: "Pre Workout",
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKpylfj17pLLTS-1vWJu6Tt__SceNiUOdKXQ&s",
-      path: "/catalog?category=pre Workout",
+      path: "/catalog?category=pre workout",
     },
     {
       name: "Probiotics",

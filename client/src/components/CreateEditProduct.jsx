@@ -107,7 +107,7 @@ export default function CreateEditProduct() {
               <option value="fish oil">Fish Oil</option>
               <option value="gainer">Gainer</option>
               <option value="glutamine">Glutamine</option>
-              <option value="L-carnitine">L-Carnitine</option>
+              <option value="L-Carnitine">L-Carnitine</option>
               <option value="multivitamins">Multivitamins</option>
               <option value="pre workout">Pre Workout</option>
               <option value="probiotics">Probiotics</option>

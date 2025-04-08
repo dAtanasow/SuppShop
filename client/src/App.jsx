@@ -33,7 +33,7 @@ function App() {
             <Route element={<PrivateGuard />}>
               <Route path="/logout" element={<Logout />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="/users/:userId/products" element={<MyProducts />} />
+              <Route path="/users/my-products" element={<MyProducts />} />
               <Route path="/create" element={<CreateEditProduct />} />
               <Route
                 path="/catalog/:productId/edit"

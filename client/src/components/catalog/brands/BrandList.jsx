@@ -161,7 +161,7 @@ export default function BrandList() {
       name: "SNAP",
       image:
         "https://easternstates.heart.org/wp-content/uploads/sites/14/2021/01/SNAp-logo.png",
-      path: "/catalog?brand=",
+      path: "/catalog?brand=SNAP",
     },
     {
       name: "Unmatched",
