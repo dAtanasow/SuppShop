@@ -1,4 +1,4 @@
-import { useGetReview } from "../../../hooks/useReviews";
+import { useGetReview } from "../../hooks/useReviews";
 
 export default function ReviewCard({ reviewId }) {
   const { review, user, handleLike, handleDislike } = useGetReview(reviewId);

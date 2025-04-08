@@ -1,11 +1,11 @@
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useDeleteProduct } from "../../../hooks/useProducts";
-import { useAuthContext } from "../../../context/AuthContext.js";
-import ToggleSection from "./ToggleSection.jsx";
-import { useAddToCart } from "../../../hooks/useCart.js";
+import { useDeleteProduct } from "../../hooks/useProducts.js";
+import { useAuthContext } from "../../context/AuthContext.js";
+import ToggleSection from "./ToggleSection.jsx.jsx";
+import { useAddToCart } from "../../hooks/useCart.js";
 import ReviewCard from "./ReviewCard.jsx";
-import { useAddReview } from "../../../hooks/useReviews.js";
+import { useAddReview } from "../../hooks/useReviews.js";
 
 export default function ProductDetails() {
   const [reviews, setReviews] = useState([]);

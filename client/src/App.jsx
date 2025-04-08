@@ -9,7 +9,7 @@ import Login from "./components/Login";
 import AuthProvider from "./context/AuthProvider";
 import Logout from "./components/Logout";
 import Catalog from "./components/catalog/Catalog";
-import ProductDetails from "./components/catalog/product-details/ProductDetails";
+import ProductDetails from "./components/product-details/ProductDetails";
 import CreateEditProduct from "./components/CreateEditProduct";
 import Profile from "./components/profile/Profile";
 import Cart from "./components/cart/Cart";
