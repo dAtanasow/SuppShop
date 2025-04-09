@@ -1,27 +1,24 @@
 import { getAccessToken } from "../utils/authUtils";
 
 export async function requester(method, url, data) {
-
     const options = {
         method,
         headers: {},
     };
 
-    if (method !== "GET") {
+    const isAuthRequired = !url.includes("/users/login") && !url.includes("/users/register");
 
-        const accessToken = getAccessToken();
+    const accessToken = getAccessToken();
 
-        if (!accessToken && !url.includes("/users/login") && !url.includes("/users/register")) {
-            throw new Error("No access token found. Please log in.");
-        }
-
+    if (accessToken && isAuthRequired) {
         options.headers['Authorization'] = `Bearer ${accessToken}`;
+    } else if (!accessToken && isAuthRequired) {
+        throw new Error("No access token found. Please log in.");
+    }
 
-        if (data) {
-            console.log("Sending data:", data);
-            options.headers['Content-Type'] = 'application/json';
-            options.body = JSON.stringify(data);
-        }
+    if (method !== "GET" && data) {
+        options.headers['Content-Type'] = 'application/json';
+        options.body = JSON.stringify(data);
     }
 
     const response = await fetch(url, options);
@@ -31,8 +28,8 @@ export async function requester(method, url, data) {
         window.location.href = '/login';
         return;
     }
-    const contentType = response.headers.get("Content-Type");
 
+    const contentType = response.headers.get("Content-Type");
     const responseText = await response.text();
 
     let result = {};
@@ -43,6 +40,7 @@ export async function requester(method, url, data) {
             console.error("Error parsing JSON:", e);
         }
     }
+
     if (!response.ok) {
         throw new Error(result.message || 'An error occurred');
     }
@@ -56,6 +54,7 @@ export async function requester(method, url, data) {
 
     return result;
 }
+
 export const get = requester.bind(null, 'GET');
 export const post = requester.bind(null, 'POST');
 export const put = requester.bind(null, 'PUT');

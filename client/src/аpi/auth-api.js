@@ -12,8 +12,6 @@ const update = (userData, userId) => request.put(`${BASE_URL}/${userId}/profile`
 
 const getUser = (userId) => request.get(`${BASE_URL}/${userId}`);
 
-const getMyProducts = (userId) => request.get(`${BASE_URL}/${userId}/products`)
-
 const checkAvailable = (email, username, phone, userId) => {
     const params = new URLSearchParams();
     if (email) params.append("email", email);
@@ -23,13 +21,13 @@ const checkAvailable = (email, username, phone, userId) => {
 
     return request.get(`${BASE_URL}/check-availability?${params.toString()}`);
 }
+
 const userApi = {
     register,
     login,
     logout,
     update,
     getUser,
-    getMyProducts,
     checkAvailable
 };
 

@@ -33,7 +33,7 @@ export default function Header() {
 
           {userId && (
             <li>
-              <Link to={`/cart/${userId}`}>
+              <Link to={`/cart`}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"

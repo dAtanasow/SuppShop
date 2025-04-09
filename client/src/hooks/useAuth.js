@@ -152,8 +152,9 @@ export const useLogin = () => {
             } else if (err.message === 'Incorrect password.') {
                 setError({ general: 'Incorrect password. Please try again.' });
             } else {
-                setError({ general: 'Login failed. Please check your credentials.' });
+                setError({ general: err.message || 'Something went wrong during login.' });
             }
+
         } finally {
             setPending(false);
         }

@@ -93,7 +93,6 @@ async function updateCartItemQuantity(req, res) {
     }
 }
 
-
 module.exports = {
     addToCart,
     getCartItems,

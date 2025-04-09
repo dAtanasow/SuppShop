@@ -128,7 +128,7 @@ export default function ProductDetails() {
 
           {isAuthor ? (
             <>
-              <Link to={`/catalog/${productId}/edit`}>
+              <Link to={`/${productId}/edit`}>
                 <button className="w-full mt-4 py-3 bg-yellow-500 text-white font-semibold text-lg rounded-lg hover:bg-yellow-600 focus:outline-none">
                   Edit
                 </button>

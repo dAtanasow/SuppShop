@@ -12,7 +12,7 @@ export default function Catalog() {
   if (loading) return <h3>Loading...</h3>;
 
   return (
-    <section className="flex flex-col justify-center">
+    <section className="flex flex-col items-center">
       <h1 className="flex text-3xl justify-center p-3">
         {category
           ? category.toUpperCase()

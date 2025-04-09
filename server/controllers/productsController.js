@@ -130,7 +130,8 @@ async function getMostRated(category) {
 };
 
 const getMyProducts = async (req, res) => {
-    const { userId } = req.params;
+    const userId = req.user._id;
+
     try {
         const products = await productModel.find({ authorId: userId });
 

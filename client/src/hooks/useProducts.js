@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import productsApi from "../аpi/products-api";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
-import userApi from "../аpi/auth-api";
 
 export function useGetAllProducts(category, brand) {
     const [products, setProducts] = useState([]);
@@ -61,7 +60,6 @@ export function useCreateProduct(productId) {
 
     const [formErrors, setFormErrors] = useState({});
     const navigate = useNavigate();
-    const { userId } = useAuthContext();
 
     useEffect(() => {
         if (productId) {
@@ -136,7 +134,7 @@ export function useCreateProduct(productId) {
                 await productsApi.create(trimmedValues);
             }
 
-            navigate(`/users/${userId}/products`);
+            navigate(`/my-products`);
         } catch (err) {
             console.error(err.message);
             setError(
@@ -159,7 +157,6 @@ export function useCreateProduct(productId) {
 
 export function useDeleteProduct() {
     const navigate = useNavigate();
-    const { userId } = useAuthContext();
 
     const deleteProduct = async (productId) => {
         const isConfirmed = confirm('Are you sure you want to delete this product?')
@@ -167,7 +164,7 @@ export function useDeleteProduct() {
             return;
         }
         await productsApi.remove(productId);
-        navigate(`/users/${userId}/products`);
+        navigate(`/users/my-products`);
     };
 
     return deleteProduct;
@@ -220,10 +217,9 @@ export function useGetMyProducts() {
             setLoading(true);
             setError(null);
             try {
-                const result = await userApi.getMyProducts(userId);
-
+                const result = await productsApi.getMyProducts();
+                
                 setProducts(Array.isArray(result) ? result : []);
-
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -235,5 +231,6 @@ export function useGetMyProducts() {
             fetchProducts();
         }
     }, [userId]);
+
     return [products, loading, error];
 }

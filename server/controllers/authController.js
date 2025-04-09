@@ -166,9 +166,6 @@ async function checkAvailable(req, res) {
     }
 }
 
-
-
-
 function getUserById(req, res, next) {
     const { userId } = req.params;
 
@@ -181,7 +178,6 @@ function getUserById(req, res, next) {
         })
         .catch((err) => next(err));
 }
-
 
 const editProfileInfo = async (req, res) => {
     try {
