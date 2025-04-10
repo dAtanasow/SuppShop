@@ -1,7 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useAuthContext } from "../../context/AuthContext";
-import { useForm } from "../../hooks/useForm";
 import { useGetOneProduct } from "../../hooks/useProducts";
 import { useGetAllReviews } from "../../hooks/useReviews";
 import { useAddToCart } from "../../hooks/useCart";
@@ -19,7 +18,6 @@ export default function ProductDetails() {
     loading: productLoading,
     error: productError,
   } = useGetOneProduct(productId);
-
   const {
     reviews: fetchedReviews,
     loading: reviewsLoading,
@@ -30,14 +28,16 @@ export default function ProductDetails() {
     refetchReviews,
   } = useGetAllReviews(productId);
 
-  const [reviews, setReviews] = useState(fetchedReviews || []);
-  const deleteProduct = useDeleteProduct();
-  const { addToCartHandler } = useAddToCart(productId);
   const { addReview, loading: newReviewLoading } = useAddReview(
     productId,
     refetchReviews
   );
+  const deleteProduct = useDeleteProduct();
+  const { addToCartHandler } = useAddToCart(productId);
 
+  const [reviews, setReviews] = useState(fetchedReviews || []);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
   const [isDescriptionOpen, setDescriptionOpen] = useState(false);
   const [isIngredientsOpen, setIngredientsOpen] = useState(false);
   const [isWarningsOpen, setWarningsOpen] = useState(false);
@@ -56,19 +56,15 @@ export default function ProductDetails() {
   useEffect(() => {
     if (fetchedReviews && fetchedReviews.length > 0) {
       setReviews(fetchedReviews);
-    } 
+    }
   }, [fetchedReviews]);
 
-  const submitReviewHandler = async (formData) => {
-    await addReview(formData.rating, formData.comment);
-    setValues({ rating: 0, comment: "" });
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    await addReview(rating, comment);
+    setRating(0);
+    setComment("");
   };
-
-  const { values, changeHandler, submitHandler, setValues, pending } = useForm(
-    { rating: 0, comment: "" },
-    submitReviewHandler,
-    { reinitializeForm: false }
-  );
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -191,11 +187,9 @@ export default function ProductDetails() {
             {[1, 2, 3, 4, 5].map((value) => (
               <span
                 key={value}
-                onClick={() =>
-                  setValues((prev) => ({ ...prev, rating: value }))
-                }
+                onClick={() => setRating(value)}
                 className={`cursor-pointer text-3xl ${
-                  values.rating >= value ? "text-yellow-500" : "text-gray-300"
+                  rating >= value ? "text-yellow-500" : "text-gray-300"
                 }`}
               >
                 ★
@@ -206,15 +200,14 @@ export default function ProductDetails() {
             className="w-full mt-2 p-2 border border-gray-300 rounded-md"
             placeholder="Write a comment (optional)"
             name="comment"
-            value={values.comment}
-            onChange={changeHandler}
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
           />
           <button
             onClick={submitHandler}
             className="w-full mt-4 py-3 bg-blue-500 text-white font-semibold text-lg rounded-lg hover:bg-blue-600"
-            disabled={pending}
           >
-            {pending ? "Submitting..." : "Submit Vote"}
+            "Submit Vote"
           </button>
         </div>
       </div>

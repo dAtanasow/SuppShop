@@ -20,6 +20,14 @@ export function useAddReview(productId, refetchReviews) {
         }
         setIsLoading(true);
         try {
+            const reviews = await reviewsApi.getAll(productId);
+
+            const existingReview = reviews.find(review => review.userId._id === userId);
+            if (existingReview) {
+                toast.error("You have already posted a review for this product.");
+                setIsLoading(false);
+                return;
+            }
             const reviewData = { rating, comment: comment || "" };
             await reviewsApi.create(productId, reviewData);
             setIsLoading(false);
