@@ -15,33 +15,40 @@ import Profile from "./components/profile/Profile";
 import Cart from "./components/cart/Cart";
 import MyProducts from "./components/profile/MyProducts";
 import PrivateGuard from "./components/PrivateGuard";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
-    <AuthProvider>
-      <div>
-        <Header />
-        <main id="main-content" className="min-h-screen">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/catalog" element={<Catalog />} />
-            <Route path="/catalog/:productId" element={<ProductDetails />} />
-            <Route element={<PrivateGuard />}>
-              <Route path="/logout" element={<Logout />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/my-products" element={<MyProducts />} />
-              <Route path="/create" element={<CreateEditProduct />} />
-              <Route path="/:productId/edit" element={<CreateEditProduct />} />
-            </Route>
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </AuthProvider>
+    <>
+      <AuthProvider>
+        <div>
+          <Header />
+          <main id="main-content" className="min-h-screen">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/catalog" element={<Catalog />} />
+              <Route path="/catalog/:productId" element={<ProductDetails />} />
+              <Route element={<PrivateGuard />}>
+                <Route path="/logout" element={<Logout />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/my-products" element={<MyProducts />} />
+                <Route path="/create" element={<CreateEditProduct />} />
+                <Route
+                  path="/:productId/edit"
+                  element={<CreateEditProduct />}
+                />
+              </Route>
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </AuthProvider>
+      <ToastContainer position="top-center" autoClose={4000} />
+    </>
   );
 }
 
