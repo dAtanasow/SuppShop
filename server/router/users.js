@@ -9,7 +9,7 @@ router.post('/logout', auth(), authController.logout);
 router.put('/:userId/profile', auth(), authController.editProfileInfo);
 
 router.get('/check-availability', authController.checkAvailable)
-router.get('/:userId', authController.getUserById);
+router.get('/:userId', auth(), authController.getUserById);
 
 
 module.exports = router

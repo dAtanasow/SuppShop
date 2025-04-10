@@ -28,16 +28,28 @@ export function useGetAllProducts(category, brand) {
 
 export function useGetOneProduct(productId) {
     const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        (async () => {
+        const fetchProduct = async () => {
             if (!productId) return;
-            const result = await productsApi.getOne(productId);
-            setProduct(result);
-        })();
-    }, [productId]);
+            try {
+                setLoading(true);
+                const result = await productsApi.getOne(productId);
+                setProduct(result);
+            } catch (err) {
+                setError('Failed to fetch product.');
+                console.error('Error fetching product:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    return [product];
+        fetchProduct();
+
+    }, [productId]);
+     return { product, loading, error };
 }
 
 export function useCreateProduct(productId) {
@@ -218,7 +230,7 @@ export function useGetMyProducts() {
             setError(null);
             try {
                 const result = await productsApi.getMyProducts();
-                
+
                 setProducts(Array.isArray(result) ? result : []);
             } catch (err) {
                 setError(err.message);
