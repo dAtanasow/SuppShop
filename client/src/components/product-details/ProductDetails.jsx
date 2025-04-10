@@ -1,21 +1,42 @@
-import { Link, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useDeleteProduct } from "../../hooks/useProducts.js";
-import { useAuthContext } from "../../context/AuthContext.js";
-import ToggleSection from "./ToggleSection.jsx.jsx";
-import { useAddToCart } from "../../hooks/useCart.js";
-import ReviewCard from "./ReviewCard.jsx";
-import { useAddReview } from "../../hooks/useReviews.js";
+import { useParams, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useAuthContext } from "../../context/AuthContext";
+import { useForm } from "../../hooks/useForm";
+import { useGetOneProduct } from "../../hooks/useProducts";
+import { useGetAllReviews } from "../../hooks/useReviews";
+import { useAddToCart } from "../../hooks/useCart";
+import { useAddReview } from "../../hooks/useReviews";
+import { useDeleteProduct } from "../../hooks/useProducts";
+import ToggleSection from "./ToggleSection.jsx";
+import ReviewCard from "../product-details/ReviewCard.jsx";
 
 export default function ProductDetails() {
-  const [reviews, setReviews] = useState([]);
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState("");
   const { productId } = useParams();
   const { userId } = useAuthContext();
+
+  const {
+    product,
+    loading: productLoading,
+    error: productError,
+  } = useGetOneProduct(productId);
+
+  const {
+    reviews: fetchedReviews,
+    loading: reviewsLoading,
+    error: reviewsError,
+    handleLike,
+    handleDislike,
+    userVote,
+    refetchReviews,
+  } = useGetAllReviews(productId);
+
+  const [reviews, setReviews] = useState(fetchedReviews || []);
   const deleteProduct = useDeleteProduct();
-  const [addToCartHandler, loading, error] = useAddToCart(productId);
-  const { addReview, product } = useAddReview(productId, setReviews);
+  const { addToCartHandler } = useAddToCart(productId);
+  const { addReview, loading: newReviewLoading } = useAddReview(
+    productId,
+    refetchReviews
+  );
 
   const [isDescriptionOpen, setDescriptionOpen] = useState(false);
   const [isIngredientsOpen, setIngredientsOpen] = useState(false);
@@ -27,22 +48,29 @@ export default function ProductDetails() {
   const toggleWarnings = () => setWarningsOpen(!isWarningsOpen);
   const toggleDirections = () => setDirectionsOpen(!isDirectionsOpen);
 
-  useEffect(() => {
-    if (product) {
-      setReviews(product.reviews || []);
-    }
-  }, [product]);
+  const isLoading = productLoading || reviewsLoading || newReviewLoading;
+  const error = productError || reviewsError;
 
   const isAuthor = userId === product?.authorId?._id;
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
-    await addReview(rating, comment);
-    setRating(0);
-    setComment("");
+  useEffect(() => {
+    if (fetchedReviews && fetchedReviews.length > 0) {
+      setReviews(fetchedReviews);
+    } 
+  }, [fetchedReviews]);
+
+  const submitReviewHandler = async (formData) => {
+    await addReview(formData.rating, formData.comment);
+    setValues({ rating: 0, comment: "" });
   };
 
-  if (loading || !product) return <div>Loading...</div>;
+  const { values, changeHandler, submitHandler, setValues, pending } = useForm(
+    { rating: 0, comment: "" },
+    submitReviewHandler,
+    { reinitializeForm: false }
+  );
+
+  if (isLoading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
   return (
@@ -151,6 +179,7 @@ export default function ProductDetails() {
           )}
         </div>
       </div>
+
       <div className="max-w-screen-lg m-auto mt-12">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4" />
 
@@ -162,9 +191,11 @@ export default function ProductDetails() {
             {[1, 2, 3, 4, 5].map((value) => (
               <span
                 key={value}
-                onClick={() => setRating(value)}
+                onClick={() =>
+                  setValues((prev) => ({ ...prev, rating: value }))
+                }
                 className={`cursor-pointer text-3xl ${
-                  rating >= value ? "text-yellow-500" : "text-gray-300"
+                  values.rating >= value ? "text-yellow-500" : "text-gray-300"
                 }`}
               >
                 ★
@@ -174,25 +205,35 @@ export default function ProductDetails() {
           <textarea
             className="w-full mt-2 p-2 border border-gray-300 rounded-md"
             placeholder="Write a comment (optional)"
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
+            name="comment"
+            value={values.comment}
+            onChange={changeHandler}
           />
           <button
             onClick={submitHandler}
             className="w-full mt-4 py-3 bg-blue-500 text-white font-semibold text-lg rounded-lg hover:bg-blue-600"
+            disabled={pending}
           >
-            Submit Vote
+            {pending ? "Submitting..." : "Submit Vote"}
           </button>
         </div>
       </div>
+
       <div className="max-w-screen mx-auto p-4 mt-12">
         <h2 className="text-3xl text-center font-semibold text-gray-800 mb-6">
           Customer Reviews
         </h2>
         <div className="m-auto rounded-lg max-w-screen-lg">
           <div className="space-y-6">
-            {reviews?.map((review) => (
-              <ReviewCard key={review} reviewId={review} />
+            {reviews?.map((review, index) => (
+              <ReviewCard
+                key={review._id || index}
+                review={review}
+                user={review.user}
+                handleLike={() => handleLike(review._id)}
+                handleDislike={() => handleDislike(review._id)}
+                userVote={userVote[review._id]}
+              />
             ))}
           </div>
         </div>

@@ -1,9 +1,12 @@
-import { useGetReview } from "../../hooks/useReviews";
-
-export default function ReviewCard({ reviewId }) {
-  const { review, user, handleLike, handleDislike } = useGetReview(reviewId);
-
+export default function ReviewCard({
+  review,
+  user,
+  handleLike,
+  handleDislike,
+  userVote,
+}) {
   if (!review || !user) return <div>Loading...</div>;
+
   return (
     <div className="flex items-start space-x-8 p-4 bg-gray-50 rounded-lg shadow-sm hover:bg-gray-100 transition-all">
       <div>
@@ -38,13 +41,17 @@ export default function ReviewCard({ reviewId }) {
       <div className="flex items-center space-x-3 mt-2 ml-auto">
         <button
           onClick={handleLike}
-          className="text-xl cursor-pointer text-blue-500"
+          className={`text-xl cursor-pointer ${
+            userVote === "like" ? "text-blue-600" : "text-blue-500"
+          }`}
         >
           👍 {review.likeCount}
         </button>
         <button
           onClick={handleDislike}
-          className="text-xl cursor-pointer text-red-500"
+          className={`text-xl cursor-pointer ${
+            userVote === "dislike" ? "text-red-600" : "text-red-500"
+          }`}
         >
           👎 {review.dislikeCount}
         </button>
