@@ -61,9 +61,11 @@ export default function ProductDetails() {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    const scrollPosition = window.scrollY;
     await addReview(rating, comment);
     setRating(0);
     setComment("");
+    window.scrollTo(0, scrollPosition);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -196,19 +198,21 @@ export default function ProductDetails() {
               </span>
             ))}
           </div>
-          <textarea
-            className="w-full mt-2 p-2 border border-gray-300 rounded-md"
-            placeholder="Write a comment (optional)"
-            name="comment"
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-          />
-          <button
-            onClick={submitHandler}
-            className="w-full mt-4 py-3 bg-blue-500 text-white font-semibold text-lg rounded-lg hover:bg-blue-600"
-          >
-            "Submit Vote"
-          </button>
+          <form onSubmit={submitHandler}>
+            <textarea
+              className="w-full mt-2 p-2 border border-gray-300 rounded-md"
+              placeholder="Write a comment (optional)"
+              name="comment"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+            />
+            <button
+              type="submit"
+              className="w-full mt-4 py-3 bg-blue-500 text-white font-semibold text-lg rounded-lg hover:bg-blue-600"
+            >
+              Submit Vote
+            </button>
+          </form>
         </div>
       </div>
 
