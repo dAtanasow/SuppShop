@@ -49,79 +49,66 @@ export function useGetOneProduct(productId) {
         fetchProduct();
 
     }, [productId]);
-     return { product, loading, error };
+    return { product, loading, error };
 }
 
-export function useCreateProduct(productId) {
-    const [isEdit, setIsEdit] = useState(false);
-    const [error, setError] = useState(null);
-    const [productData, setProductData] = useState({
-        title: "",
-        imgURL: "",
-        category: "",
-        price: 0,
-        brand: "",
-        description: "",
-        flavour: "",
-        weight: 0,
-        servings: 0,
-        ingredient: "",
-        directions: "",
-        warnings: "",
-    });
+const initialProductState = {
+    title: "",
+    imgURL: "",
+    category: "",
+    price: 0,
+    brand: "",
+    description: "",
+    flavour: "",
+    weight: 0,
+    servings: 0,
+    ingredient: "",
+    directions: "",
+    warnings: "",
+};
 
+export function useCreateProduct(productId) {
+    const [error, setError] = useState(null);
     const [formErrors, setFormErrors] = useState({});
+    const [productData, setProductData] = useState(initialProductState);
     const navigate = useNavigate();
+    const isEdit = !!productId;
 
     useEffect(() => {
-        if (productId) {
-            setIsEdit(true);
-            (async () => {
-                try {
-                    const product = await productsApi.getOne(productId);
-                    setProductData(product);
-                } catch (err) {
-                    console.error(err.message);
-                    setError("Failed to load product details.");
-                }
-            })()
-        }
+        if (!productId) return;
+
+        const fetchProduct = async () => {
+            try {
+                const product = await productsApi.getOne(productId);
+                setProductData(product);
+            } catch (err) {
+                console.error(err);
+                setError("Failed to load product details.");
+            }
+        };
+
+        fetchProduct();
     }, [productId]);
+
 
     const validate = (values) => {
         const errors = {};
-        if (!values.title.trim() || values.title.trim().length < 3 || !/^[a-zA-Z0-9\s]+$/.test(values.title)) {
+        const urlPattern = /^(https?:\/\/)[^\s/$.?#].[^\s]*$/i;
+
+        if (!values.title?.trim() || values.title.trim().length < 3 || !/^[a-zA-Z0-9\s]+$/.test(values.title)) {
             errors.title = 'Title must be at least 3 characters and contain only letters and numbers';
         }
-
-        const urlPattern = /^(https?:\/\/)[^\s/$.?#].[^\s]*$/i;
-        if (!values.imgURL.trim() || !urlPattern.test(values.imgURL.trim())) {
+        if (!values.imgURL?.trim() || !urlPattern.test(values.imgURL.trim())) {
             errors.imgURL = 'Please provide a valid URL starting with http:// or https://';
         }
-
-        if (!values.category) {
-            errors.category = 'Category is required';
-        }
-
-        if (!values.brand) {
-            errors.brand = 'Brand is required';
-        }
-
-        if (values.price < 1) {
-            errors.price = 'Price must be at least 1';
-        }
-
-        if (!values.flavour.trim() || values.flavour.trim().length < 3 || !/^[a-zA-Z]+$/.test(values.flavour)) {
+        if (!values.category) errors.category = "Category is required";
+        if (!values.brand) errors.brand = "Brand is required";
+        if (values.price < 1) errors.price = "Price must be at least 1";
+        if (!values.flavour.trim() || values.flavour.trim().length < 3 || !/^[a-zA-Z\s]+$/.test(values.flavour)) {
             errors.flavour = 'Flavour is required and must be at least 3 letters';
         }
-
-        if (values.weight < 1) {
-            errors.weight = 'Weight must be at least 10 grams';
-        }
-
-        if (values.servings < 1) {
-            errors.servings = 'Servings must be at least 1';
-        }
+        if (values.weight < 1) errors.weight = "Weight must be at least 1 gram";
+        if (values.servings < 1) errors.servings = "Servings must be at least 1";
 
         return errors;
     };
