@@ -17,7 +17,7 @@ export default function Register() {
     pending,
     validateForm,
     setError,
-    checkIfEmailOrUsernameTaken,
+    checkIsDataAvailable,
   } = useRegister();
 
   const navigate = useNavigate();
@@ -31,25 +31,15 @@ export default function Register() {
       return;
     }
 
-    const isAvailable = await checkIfEmailOrUsernameTaken(
-      values.email,
-      values.username,
-      values.phone
-    );
-    if (!values.email || !values.username || !values.phone) {
+    const isAvailable = await checkIsDataAvailable(email, username, phone);
+    if (!email || !username || !phone) {
       return;
     }
 
     if (!isAvailable) return;
 
     try {
-      await register(
-        values.email,
-        values.username,
-        values.phone,
-        values.password,
-        values.rePass
-      );
+      await register(email, username, phone, password, rePass);
 
       navigate("/");
     } catch (err) {
@@ -62,6 +52,8 @@ export default function Register() {
     initialValues,
     registerHandler
   );
+
+  const { email, username, phone, password, rePass } = values;
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
@@ -81,7 +73,7 @@ export default function Register() {
             type="email"
             id="email"
             name="email"
-            value={values.email}
+            value={email}
             onChange={changeHandler}
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
@@ -100,14 +92,12 @@ export default function Register() {
             type="text"
             id="username"
             name="username"
-            value={values.username}
+            value={username}
             onChange={changeHandler}
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
-          {errors?.username && (
-            <p className="text-red-500">{errors.username}</p>
-          )}
+          {errors?.username && <p className="text-red-500">{errors.username}</p>}
         </div>
 
         <div className="mb-4">
@@ -121,10 +111,12 @@ export default function Register() {
             type="tel"
             id="phone"
             name="phone"
-            value={values.phone}
+            value={phone}
             onChange={changeHandler}
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
+            maxLength={10}
+            minLength={10}
           />
           {errors?.phone && <p className="text-red-500">{errors.phone}</p>}
         </div>
@@ -140,7 +132,7 @@ export default function Register() {
             type="password"
             id="password"
             name="password"
-            value={values.password}
+            value={password}
             onChange={changeHandler}
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
@@ -161,7 +153,7 @@ export default function Register() {
             type="password"
             id="rePass"
             name="rePass"
-            value={values.rePass}
+            value={rePass}
             onChange={changeHandler}
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
@@ -169,7 +161,7 @@ export default function Register() {
           {errors?.rePass && <p className="text-red-500">{errors.rePass}</p>}
         </div>
 
-        {errors.server && <span>{errors.server}</span>}
+        {errors?.server && <span>{errors.server}</span>}
 
         <button
           type="submit"

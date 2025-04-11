@@ -6,7 +6,7 @@ export async function requester(method, url, data) {
         headers: {},
     };
 
-    const isAuthRequired = !url.includes("/users/login") && !url.includes("/users/register");
+    const isAuthRequired = !url.includes("/users/login") && !url.includes("/users/register") && !url.includes("/check-availability");
 
     const accessToken = getAccessToken();
 

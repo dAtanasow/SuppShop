@@ -1,12 +1,9 @@
 const productModel = require("../models/productModel");
 const userModel = require("../models/userModel");
 const reviewModel = require("../models/reviewModel");
-const mongoose = require('mongoose');
-
 
 async function getProductReviews(req, res) {
     const { productId } = req.params;
-
     try {
         const product = await productModel
             .findById(productId)
@@ -21,7 +18,6 @@ async function getProductReviews(req, res) {
         if (!product) {
             return res.status(404).json({ message: 'Product not found' });
         }
-
         res.status(200).json(product.reviews);
     } catch (error) {
         console.error('Error fetching product reviews:', error);
@@ -154,7 +150,6 @@ async function dislike(req, res) {
 }
 
 module.exports = {
-    getReview,
     getProductReviews,
     postReview,
     like,

@@ -1,13 +1,41 @@
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import userApi from "../аpi/auth-api";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 export const useRegister = () => {
     const { changeAuthState, userId } = useAuthContext()
-
     const [errors, setError] = useState({});
     const [pending, setPending] = useState(false);
+
+    const registerHandler = async (email, username, phone, password, rePass) => {
+
+        email = email.trim();
+        username = username.trim();
+        phone = phone.trim();
+        password = password.trim();
+        rePass = rePass.trim();
+
+        setPending(true);
+        setError({});
+
+        const isDataAvailable = await checkIsDataAvailable(email, username, phone);
+        if (!isDataAvailable) {
+            setPending(false);
+            return;
+        }
+
+        try {
+            const authData = await userApi.register(email, username, phone, password, rePass);
+            changeAuthState(authData);
+            return authData;
+        } catch (error) {
+            setError({ server: error.message });
+            return { error: error.message };
+        } finally {
+            setPending(false);
+        }
+    }
 
     const validateForm = (values) => {
         const errors = {};
@@ -39,7 +67,7 @@ export const useRegister = () => {
         return errors;
     };
 
-    const checkIfEmailOrUsernameTaken = async (email, username, phone) => {
+    const checkIsDataAvailable = async (email, username, phone) => {
         if (!email || !username || !phone) {
             console.log("Missing required fields");
             return;
@@ -67,40 +95,10 @@ export const useRegister = () => {
         }
     };
 
-    const registerHandler = async (email, username, phone, password, rePass) => {
-
-        email = email.trim();
-        username = username.trim();
-        phone = phone.trim();
-        password = password.trim();
-        rePass = rePass.trim();
-
-        setPending(true);
-        setError({});
-
-        const validationErrors = validateForm({ email, username, phone, password, rePass });
-        if (Object.keys(validationErrors).length > 0) {
-            setError(validationErrors);
-            setPending(false);
-            return;
-        }
-
-        try {
-            const authData = await userApi.register(email, username, phone, password, rePass);
-            changeAuthState(authData);
-            return authData;
-        } catch (error) {
-            setError({ server: error.message });
-            return { error: error.message };
-        } finally {
-            setPending(false);
-        }
-    }
-
     return {
         register: registerHandler,
         validateForm,
-        checkIfEmailOrUsernameTaken,
+        checkIsDataAvailable,
         setError,
         pending,
         errors,
@@ -112,23 +110,23 @@ export const useLogin = () => {
     const [errors, setError] = useState(null);
     const [pending, setPending] = useState(false);
 
-    const validateForm = (email, password) => {
-        const errors = {};
+    const validateForm = useCallback((email, password) => {
+        const validationErrors = {};
 
         if (!email) {
-            errors.email = "Email is required.";
+            validationErrors.email = "Email is required.";
         } else if (!/\S+@\S+\.\S+/.test(email)) {
-            errors.email = "Invalid email format.";
+            validationErrors.email = "Invalid email format.";
         }
 
         if (!password) {
-            errors.password = "Password is required.";
+            validationErrors.password = "Password is required.";
         }
 
-        return errors;
-    };
+        return validationErrors;
+    }, []);
 
-    const loginHandler = async (email, password) => {
+    const loginHandler = useCallback(async (email, password) => {
         if (pending) return;
         setPending(true);
         setError({});
@@ -158,7 +156,7 @@ export const useLogin = () => {
         } finally {
             setPending(false);
         }
-    };
+    }, [pending, validateForm, changeAuthState]);
 
     return {
         login: loginHandler,
