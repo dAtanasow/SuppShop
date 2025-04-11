@@ -1,16 +1,15 @@
 import { useProfileEdit } from "../../hooks/useProfile";
+import FormField from "../FormField";
 
 export default function ProfileEdit({ toggleEditMode }) {
-  const {
-    values,
-    changeHandler,
-    submitHandler,
-    pending,
-    errors,
-  } = useProfileEdit(toggleEditMode);
+  const { values, changeHandler, submitHandler, pending, errors } =
+    useProfileEdit(toggleEditMode);
 
   return (
-    <form onSubmit={submitHandler} className="flex flex-col space-y-6 bg-white p-6">
+    <form
+      onSubmit={submitHandler}
+      className="flex flex-col space-y-6 bg-white p-6"
+    >
       <FormField
         id="email"
         label="Email"
@@ -70,24 +69,3 @@ export default function ProfileEdit({ toggleEditMode }) {
     </form>
   );
 }
-
-function FormField({ id, label, type, value, onChange, error, maxLength }) {
-  return (
-    <div>
-      <label htmlFor={id} className="block text-sm font-medium text-gray-800 mb-1">
-        {label}
-      </label>
-      <input
-        type={type}
-        id={id}
-        name={id}
-        value={value || ""}
-        onChange={onChange}
-        maxLength={maxLength}
-        className="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-      />
-      {error && <p className="text-red-500 text-sm">{error}</p>}
-    </div>
-  );
-}
-
