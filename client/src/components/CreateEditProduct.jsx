@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useCreateProduct } from "../hooks/useProducts";
 import { useForm } from "../hooks/useForm";
+import FormField from "./FormField";
 
 export default function CreateEditProduct() {
   const { productId } = useParams();
@@ -34,46 +35,24 @@ export default function CreateEditProduct() {
         )}
 
         <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label
-              htmlFor="title"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Title
-            </label>
-            <input
-              type="text"
-              id="title"
-              name="title"
-              value={values.title}
-              onChange={changeHandler}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            {formErrors.title && (
-              <p className="text-red-500 text-sm">{formErrors.title}</p>
-            )}
-          </div>
-          <div>
-            <label
-              htmlFor="imgURL"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Image URL
-            </label>
-            <input
-              type="text"
-              id="imgURL"
-              name="imgURL"
-              value={values.imgURL}
-              onChange={changeHandler}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            {formErrors.imgURL && (
-              <p className="text-red-500 text-sm">{formErrors.imgURL}</p>
-            )}
-          </div>
+          <FormField
+            id="title"
+            label="Title"
+            type="text"
+            value={values.title}
+            onChange={changeHandler}
+            error={formErrors.title}
+            isRequired
+          />
+          <FormField
+            id="imgURL"
+            label="Image URL"
+            type="text"
+            value={values.imgURL}
+            onChange={changeHandler}
+            error={formErrors.imgURL}
+            isRequired
+          />
 
           <div>
             <label
@@ -174,89 +153,46 @@ export default function CreateEditProduct() {
             </select>
           </div>
 
-          <div>
-            <label
-              htmlFor="flavour"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Flavour
-            </label>
-            <input
-              type="text"
-              id="flavour"
-              name="flavour"
-              value={values.flavour}
-              onChange={changeHandler}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            {formErrors.flavour && (
-              <p className="text-red-500 text-sm">{formErrors.flavour}</p>
-            )}
-          </div>
+          <FormField
+            id="flavour"
+            label="Flavour"
+            type="text"
+            value={values.flavour}
+            onChange={changeHandler}
+            error={formErrors.flavour}
+            isRequired
+          />
 
-          <div>
-            <label
-              htmlFor="price"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Price
-            </label>
-            <input
-              type="number"
-              id="price"
-              name="price"
-              value={values.price}
-              onChange={changeHandler}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            {formErrors.price && (
-              <p className="text-red-500 text-sm">{formErrors.price}</p>
-            )}
-          </div>
+          <FormField
+            id="price"
+            label="Price"
+            type="number"
+            value={values.price}
+            onChange={changeHandler}
+            error={formErrors.price}
+            isRequired
+          />
 
-          <div>
-            <label
-              htmlFor="weight"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Weight (in grams)
-            </label>
-            <input
-              type="number"
-              id="weight"
-              name="weight"
-              value={values.weight}
-              onChange={changeHandler}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            {formErrors.weight && (
-              <p className="text-red-500 text-sm">{formErrors.weight}</p>
-            )}
-          </div>
+          <FormField
+            id="weight"
+            label="Weight (in grams)"
+            type="number"
+            value={values.weight}
+            onChange={changeHandler}
+            error={formErrors.weight}
+            isRequired
+          />
 
-          <div>
-            <label
-              htmlFor="servings"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Servings
-            </label>
-            <input
-              type="number"
-              id="servings"
-              name="servings"
-              value={values.servings}
-              onChange={changeHandler}
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-            {formErrors.servings && (
-              <p className="text-red-500 text-sm">{formErrors.servings}</p>
-            )}
-          </div>
+          <FormField
+            id="servings"
+            label="Servings"
+            type="number"
+            value={values.servings}
+            onChange={changeHandler}
+            error={formErrors.servings}
+            isRequired
+          />
+
           <div className="col-span-2">
             <label
               htmlFor="description"

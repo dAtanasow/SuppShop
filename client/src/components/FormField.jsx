@@ -6,6 +6,7 @@ export default function FormField({
   onChange,
   error,
   maxLength,
+  isRequired = false,
 }) {
   return (
     <div>
@@ -23,6 +24,7 @@ export default function FormField({
         onChange={onChange}
         maxLength={maxLength}
         className="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+        required={isRequired}
       />
       {error && <p className="text-red-500 text-sm">{error}</p>}
     </div>
