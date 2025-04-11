@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import productsApi from "../аpi/products-api";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
+import { useForm } from "./useForm";
 
 export function useGetAllProducts(category, brand) {
     const [products, setProducts] = useState([]);
@@ -144,13 +145,19 @@ export function useCreateProduct(productId) {
         }
     };
 
+    const { values, changeHandler, submitHandler } = useForm(
+        productData,
+        createOrUpdateProduct,
+        { reinitializeForm: !!productId }
+    );
+
     return {
         isEdit,
         error,
+        values,
+        changeHandler,
+        submitHandler,
         formErrors,
-        productData,
-        setProductData,
-        createOrUpdateProduct,
     };
 };
 

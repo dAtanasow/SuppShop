@@ -1,18 +1,17 @@
 import { useParams } from "react-router-dom";
 import { useCreateProduct } from "../hooks/useProducts";
-import { useForm } from "../hooks/useForm";
 import FormField from "./FormField";
 
 export default function CreateEditProduct() {
   const { productId } = useParams();
-  const { isEdit, error, productData, createOrUpdateProduct, formErrors } =
-    useCreateProduct(productId);
-
-  const { values, changeHandler, submitHandler } = useForm(
-    productData,
-    createOrUpdateProduct,
-    { reinitializeForm: !!productId }
-  );
+  const {
+    isEdit,
+    error,
+    formErrors,
+    values,
+    changeHandler,
+    submitHandler,
+  } = useCreateProduct(productId);
 
   return (
     <div className="grid place-items-center min-h-screen bg-gray-100">
