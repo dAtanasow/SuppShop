@@ -88,7 +88,6 @@ export function useProfileEdit(toggleEditMode) {
             );
 
             if (!hasChanges) {
-                console.log("No changes detected. Skipping update request.");
                 toggleEditMode();
                 return;
             }

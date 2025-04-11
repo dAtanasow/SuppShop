@@ -32,7 +32,11 @@ export default function ProductDetails() {
     productId,
     refetchReviews
   );
-  const deleteProduct = useDeleteProduct();
+  const {
+    deleteProduct,
+    loading: deleteLoading,
+    error: deleteError,
+  } = useDeleteProduct();
   const { addToCartHandler } = useAddToCart(productId);
 
   const [reviews, setReviews] = useState(fetchedReviews || []);
@@ -48,8 +52,9 @@ export default function ProductDetails() {
   const toggleWarnings = () => setWarningsOpen(!isWarningsOpen);
   const toggleDirections = () => setDirectionsOpen(!isDirectionsOpen);
 
-  const isLoading = productLoading || reviewsLoading || newReviewLoading;
-  const error = productError || reviewsError;
+  const isLoading =
+    productLoading || reviewsLoading || newReviewLoading || deleteLoading;
+  const error = productError || reviewsError || deleteError;
 
   const isAuthor = userId === product?.authorId?._id;
 

@@ -156,17 +156,27 @@ export function useCreateProduct(productId) {
 
 export function useDeleteProduct() {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     const deleteProduct = async (productId) => {
-        const isConfirmed = confirm('Are you sure you want to delete this product?')
+        const isConfirmed = window.confirm('Are you sure you want to delete this product?')
         if (!isConfirmed) {
             return;
         }
-        await productsApi.remove(productId);
-        navigate(`/users/my-products`);
+        setLoading(true);
+        try {
+            await productsApi.remove(productId);
+            navigate('/my-products');
+        } catch (err) {
+            console.error('Error deleting product:', err);
+            setError('There was an error deleting the product. Please try again later.');
+        } finally {
+            setLoading(false);
+        }
     };
 
-    return deleteProduct;
+    return { deleteProduct, loading, error };
 }
 
 export function useGetMostRated(category) {
