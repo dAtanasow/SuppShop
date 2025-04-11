@@ -40,46 +40,51 @@ export function useProfileEdit(toggleEditMode) {
         }
 
         setError(newErrors);
-        return Object.keys(newErrors).length === 0;
+        return newErrors;
     };
 
     const checkIfEmailOrUsernameTaken = async (email, username, phone) => {
         try {
             const data = await userApi.checkAvailable(email, username, phone, userId);
 
-            if (data.emailTaken || data.usernameTaken || data.phoneTaken) {
-                setError((prev) => ({
-                    ...prev,
-                    email: data.emailTaken ? "Email is already taken." : "",
-                    username: data.usernameTaken ? "Username is already taken." : "",
-                    phone: data.phoneTaken ? "Phone is already taken." : "",
-                }));
+            const availabilityErrors = {};
+            if (data.emailTaken) availabilityErrors.email = "Email is already taken.";
+            if (data.usernameTaken) availabilityErrors.username = "Username is already taken.";
+            if (data.phoneTaken) availabilityErrors.phone = "Phone is already taken.";
+
+            if (Object.keys(availabilityErrors).length > 0) {
+                setError((prev) => ({ ...prev, ...availabilityErrors }));
                 return false;
             }
+
             return true;
         } catch (err) {
             setError((prev) => ({
                 ...prev,
-                server: "Server error. Please check your connection or try again later.",
+                general: "Server error. Please check your connection or try again later.",
             }));
             console.log("Error checking availability:", err.message);
             return false;
         }
     };
 
+    const trimStringValues = (obj) =>
+        Object.fromEntries(
+            Object.entries(obj).map(([key, value]) =>
+                typeof value === "string" ? [key, value.trim()] : [key, value]
+            )
+        );
+
     const { values, changeHandler, submitHandler, pending } = useForm(
         initialValues,
         async (formData) => {
-            if (!validateForm(formData)) return;
+            const trimmedData = trimStringValues(formData);
 
-            const trimmedFormData = Object.fromEntries(
-                Object.entries(formData).map(([key, value]) =>
-                    typeof value === "string" ? [key, value.trim()] : [key, value]
-                )
-            );
+            const formErrors = validateForm(trimmedData);
+            if (Object.keys(formErrors).length > 0) return;
 
             const hasChanges = Object.keys(initialValues).some(
-                (key) => trimmedFormData[key] !== initialValues[key].trim()
+                (key) => trimmedData[key] !== initialValues[key].trim()
             );
 
             if (!hasChanges) {
@@ -88,15 +93,15 @@ export function useProfileEdit(toggleEditMode) {
                 return;
             }
 
-            const isAvailable = await checkIfEmailOrUsernameTaken(
-                trimmedFormData.email,
-                trimmedFormData.username,
-                trimmedFormData.phone
-            );
+            const available = await checkIfEmailOrUsernameTaken(
+                trimmedData.email,
+                trimmedData.username,
+                trimmedData.phone
+              );
 
-            if (!isAvailable) return;
+            if (!available) return;
 
-            const updatedUser = await userApi.update(trimmedFormData, userId);
+            const updatedUser = await userApi.update(trimmedData, userId);
             changeAuthState(updatedUser);
             toggleEditMode();
         },
@@ -106,16 +111,12 @@ export function useProfileEdit(toggleEditMode) {
     const handleChange = async (e) => {
         changeHandler(e);
         setError((prev) => ({ ...prev, [e.target.name]: "" }));
-        validateForm({ ...values, [e.target.name]: e.target.value });
     };
 
     return {
-        changeHandler: handleChange,
-        checkIfEmailOrUsernameTaken,
-        submitHandler,
-        setError,
-        validateForm,
         values,
+        changeHandler: handleChange,
+        submitHandler,
         pending,
         errors,
     };
