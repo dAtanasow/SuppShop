@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import ConfirmModal from "../ConfirmModal.jsx";
 
 export default function CartItem({
@@ -22,11 +23,13 @@ export default function CartItem({
     <div className="cart-items">
       <div className="cart-item flex items-center justify-between p-4 border-b">
         <div className="flex items-center">
-          <img
-            src={item.imgURL}
-            alt={item.title}
-            className="w-30 object-cover mr-4"
-          />
+          <Link to={`/catalog/${item._id}`}>
+            <img
+              src={item.imgURL}
+              alt={item.title}
+              className="w-30 object-cover mr-4"
+            />
+          </Link>
           <div>
             <h2 className="text-xl/8">
               {item.title} - {item.brand}
