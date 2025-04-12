@@ -9,23 +9,27 @@ import { useDeleteProduct } from "../../hooks/useProducts";
 import ToggleSection from "./ToggleSection.jsx";
 import ReviewCard from "../product-details/ReviewCard.jsx";
 import ConfirmModal from "../ConfirmModal.jsx";
+import userApi from "../../аpi/auth-api.js";
+import SellerInfo from "./SellerInfo.jsx";
 
 export default function ProductDetails() {
   const { productId } = useParams();
   const { userId } = useAuthContext();
+  const { addToCartHandler } = useAddToCart(productId);
 
   const {
     product,
     loading: productLoading,
     error: productError,
   } = useGetOneProduct(productId);
+
   const {
     reviews: fetchedReviews,
     loading: reviewsLoading,
     error: reviewsError,
+    userVote,
     handleLike,
     handleDislike,
-    userVote,
     refetchReviews,
   } = useGetAllReviews(productId);
 
@@ -38,11 +42,11 @@ export default function ProductDetails() {
     loading: deleteLoading,
     error: deleteError,
   } = useDeleteProduct();
-  const { addToCartHandler } = useAddToCart(productId);
 
   const [reviews, setReviews] = useState(fetchedReviews || []);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
+  const [authorData, setAuthorData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDescriptionOpen, setDescriptionOpen] = useState(false);
   const [isIngredientsOpen, setIngredientsOpen] = useState(false);
@@ -59,6 +63,19 @@ export default function ProductDetails() {
   const error = productError || reviewsError || deleteError;
 
   const isAuthor = userId === product?.authorId?._id;
+  useEffect(() => {
+    const fetchAuthor = async () => {
+      if (product?.authorId) {
+        try {
+          const data = await userApi.getUser(product.authorId._id);
+          setAuthorData(data);
+        } catch (err) {
+          console.error("Error fetching author info:", err);
+        }
+      }
+    };
+    fetchAuthor();
+  }, [product?.authorId]);
 
   useEffect(() => {
     if (fetchedReviews && fetchedReviews.length > 0) {
@@ -98,6 +115,7 @@ export default function ProductDetails() {
               No Image Available
             </div>
           )}
+          <SellerInfo authorData={authorData} />
         </div>
 
         <div className="w-full md:w-1/2 p-4">

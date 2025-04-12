@@ -22,7 +22,7 @@ export default function Catalog() {
       </h1>
       <div className="flex gap-20 flex-wrap justify-start pt-5 w-[80vw]">
         {error ? (
-          <h3 className="w-full pr-10 text-center text-3xl">{error}</h3>
+          <h3 className="w-full text-center text-3xl">{error}</h3>
         ) : (
           products.map((product) => <Product key={product._id} {...product} />)
         )}
