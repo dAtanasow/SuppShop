@@ -38,7 +38,7 @@ export default function Profile() {
               </button>
 
               <Link
-                to={`/users/my-products`}
+                to={`/my-products`}
                 className="px-6 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition duration-300"
               >
                 My Products

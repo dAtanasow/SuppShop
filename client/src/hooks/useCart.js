@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import cartApi from "../аpi/cart-api";
+import { toast } from "react-toastify";
 
 export function useGetCartItems() {
     const [cartItems, setCartItems] = useState([]);
@@ -43,7 +44,7 @@ export function useAddToCart(productId) {
         try {
             await cartApi.addToCart(productId, userId);
             setLoading(false);
-            alert('Product added to your cart!');
+            toast.success('Product added to your cart!');
         } catch (err) {
             setError(err.message || "An error occurred while adding to cart");
         } finally {

@@ -167,10 +167,6 @@ export function useDeleteProduct() {
     const [error, setError] = useState(null);
 
     const deleteProduct = async (productId) => {
-        const isConfirmed = window.confirm('Are you sure you want to delete this product?')
-        if (!isConfirmed) {
-            return;
-        }
         setLoading(true);
         try {
             await productsApi.remove(productId);

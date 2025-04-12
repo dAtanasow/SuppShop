@@ -8,6 +8,7 @@ import { useAddReview } from "../../hooks/useReviews";
 import { useDeleteProduct } from "../../hooks/useProducts";
 import ToggleSection from "./ToggleSection.jsx";
 import ReviewCard from "../product-details/ReviewCard.jsx";
+import ConfirmModal from "../ConfirmModal.jsx";
 
 export default function ProductDetails() {
   const { productId } = useParams();
@@ -42,6 +43,7 @@ export default function ProductDetails() {
   const [reviews, setReviews] = useState(fetchedReviews || []);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDescriptionOpen, setDescriptionOpen] = useState(false);
   const [isIngredientsOpen, setIngredientsOpen] = useState(false);
   const [isWarningsOpen, setWarningsOpen] = useState(false);
@@ -63,6 +65,11 @@ export default function ProductDetails() {
       setReviews(fetchedReviews);
     }
   }, [fetchedReviews]);
+
+  const deleteHandler = () => {
+    deleteProduct(productId);
+    setIsModalOpen(false);
+  };
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -167,10 +174,17 @@ export default function ProductDetails() {
 
               <button
                 className="w-full mt-4 py-3 bg-red-500 text-white font-semibold text-lg rounded-lg hover:bg-red-600 focus:outline-none"
-                onClick={() => deleteProduct(productId)}
+                onClick={() => setIsModalOpen(true)}
               >
                 Delete
               </button>
+
+              <ConfirmModal
+                isOpen={isModalOpen}
+                message="Are you sure you want to delete this product?"
+                onConfirm={deleteHandler}
+                onCancel={() => setIsModalOpen(false)}
+              />
             </>
           ) : (
             <button

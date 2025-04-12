@@ -3,10 +3,12 @@ import { useAuthContext } from "../../context/AuthContext";
 import { useGetCartItems } from "../../hooks/useCart";
 import cartApi from "../../аpi/cart-api";
 import CartItem from "./CartItem";
+import { useState } from "react";
 
 export default function Cart() {
   const { userId } = useAuthContext();
   const [cartItems, setCartItems, loading, error] = useGetCartItems(userId);
+  const [modalItemId, setIsModalItemId] = useState(null);
 
   const updateItemQuantity = async (userId, itemId, newQuantity) => {
     try {
@@ -23,19 +25,13 @@ export default function Cart() {
   };
 
   const removeItemHandler = async (userId, itemId) => {
-    const isConfirmed = window.confirm(
-      "Are you sure you want to remove this item from your cart?"
-    );
-
-    if (!isConfirmed) {
-      return;
-    }
     try {
       await cartApi.removeCartItem(userId, itemId);
       const updatedCart = cartItems.filter(
         (item) => item.productId._id !== itemId
       );
       setCartItems(updatedCart);
+      setIsModalItemId(null);
     } catch (err) {
       console.error("Error removing item", err);
     }
@@ -68,6 +64,8 @@ export default function Cart() {
             userId={userId}
             onRemove={removeItemHandler}
             onUpdateQuantity={updateItemQuantity}
+            modalItemId={modalItemId}
+            setIsModalItemId={setIsModalItemId}
           />
         ))
       ) : (

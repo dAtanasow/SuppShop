@@ -1,9 +1,13 @@
+import ConfirmModal from "../ConfirmModal.jsx";
+
 export default function CartItem({
   item,
   userId,
   onRemove,
   quantity,
   onUpdateQuantity,
+  modalItemId,
+  setIsModalItemId,
 }) {
   const handleIncrease = () => {
     onUpdateQuantity(userId, item._id, quantity + 1);
@@ -48,10 +52,16 @@ export default function CartItem({
           </button>
           <button
             className="ml-4 text-red-500"
-            onClick={() => onRemove(userId, item._id)}
+            onClick={() => setIsModalItemId(item._id)}
           >
             Remove
           </button>
+          <ConfirmModal
+            isOpen={modalItemId === item._id}
+            message="Are you sure you want to remove this item?"
+            onConfirm={() => onRemove(userId, item._id)}
+            onCancel={() => setIsModalItemId(null)}
+          />
         </div>
       </div>
     </div>
