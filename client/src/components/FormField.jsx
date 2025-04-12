@@ -12,7 +12,7 @@ export default function FormField({
     <div>
       <label
         htmlFor={id}
-        className="block text-sm font-medium text-gray-800 mb-1"
+        className="block pt-2 text-sm font-medium text-gray-800 mb-1"
       >
         {label}
       </label>
