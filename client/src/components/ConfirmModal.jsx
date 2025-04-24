@@ -1,25 +1,43 @@
-export default function ConfirmModal({ message, onConfirm, onCancel, isOpen }) {
-  if (!isOpen) return null;
+import { AnimatePresence, motion } from "framer-motion";
 
+export default function ConfirmModal({ isOpen, message, onConfirm, onCancel }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">{message}</h2>
-        <div className="flex justify-end gap-4">
-          <button
-            onClick={onCancel}
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div
+            className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-lg"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
           >
-            Cancel
-          </button>
-          <button
-            onClick={onConfirm}
-            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-          >
-            Confirm
-          </button>
-        </div>
-      </div>
-    </div>
+            <p className="text-center text-base sm:text-lg text-gray-800 font-medium mb-6">
+              {message}
+            </p>
+
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={onCancel}
+                className="px-4 py-2 rounded-xl bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold transition"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={onConfirm}
+                className="px-4 py-2 rounded-xl bg-red-500 hover:bg-red-600 text-white font-semibold transition"
+              >
+                Remove
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
