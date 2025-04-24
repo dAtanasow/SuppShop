@@ -7,29 +7,59 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 
 export default function Header() {
   const { userId, isAuthenticate } = useAuthContext();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
   const [isBrandOpen, setIsBrandOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Добавено състояние за мобилното меню
+
+  const handleCategoryMouseEnter = () => setIsCategoryOpen(true);
+  const handleCategoryMouseLeave = () => setIsCategoryOpen(false);
+
+  const handleBrandMouseEnter = () => setIsBrandOpen(true);
+  const handleBrandMouseLeave = () => setIsBrandOpen(false);
+  const handleMouseLeave = (e) => {
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      setIsCategoryOpen(false);
+      setIsBrandOpen(false);
+    }
+  };
 
   return (
-    <header className="bg-white shadow w-ful relative">
+    <header className="bg-white shadow w-full relative">
       {/* === DESKTOP HEADER === */}
-      <nav className="hidden md:flex items-center justify-between p-4 text-lg">
-        <div className="text-xl font-semibold">
-          <Link to="/">
-            supp<span className="text-green-700">shop</span>
-          </Link>
+      <nav className="hidden md:flex items-center justify-between p-4 text-lg relative">
+        <div className="flex w-[30%] items-center gap-4">
+          <div className="text-xl font-semibold">
+            <Link to="/">
+              supp<span className="text-green-700">shop</span>
+            </Link>
+          </div>
         </div>
 
-        <ul className="flex gap-10 justify-center items-center">
-          <li className="relative group">
+        <ul className="flex gap-10 justify-center items-center max-w-full relative">
+          <li
+            className="relative group"
+            onMouseEnter={handleCategoryMouseEnter}
+            onMouseLeave={handleCategoryMouseLeave}
+          >
             <p className="hover:text-gray-700 cursor-pointer">Category</p>
-            <CategoryList />
+            {isCategoryOpen && (
+              <div className="absolute left-45 transform -translate-x-1/2 top-7 w bg-white shadow-lg z-10">
+                <CategoryList />
+              </div>
+            )}
           </li>
 
-          <li className="relative group">
+          <li
+            className="relative group"
+            onMouseEnter={handleBrandMouseEnter}
+            onMouseLeave={handleBrandMouseLeave}
+          >
             <p className="hover:text-gray-700 cursor-pointer">Brands</p>
-            <BrandList />
+            {isBrandOpen && (
+              <div className="absolute left-55 transform -translate-x-1/2 top-7 w-80 bg-white shadow-lg z-10">
+                <BrandList />
+              </div>
+            )}
           </li>
 
           {userId && (
@@ -41,10 +71,12 @@ export default function Header() {
           )}
         </ul>
 
-        <div className="flex items-center gap-4">
+        <div className="w-[30%] flex justify-end gap-6">
           {isAuthenticate ? (
             <>
-              <Link to="/create">Add Product</Link>
+              <Link to="/create" className="hover:text-gray-700">
+                Add Product
+              </Link>
               <Link className="border-l pl-3" to="/profile">
                 Profile
               </Link>
@@ -70,7 +102,6 @@ export default function Header() {
 
       {/* === MOBILE HEADER === */}
       <div className="md:hidden w-full flex items-center justify-between px-4 py-3 relative">
-        {/* Ляво: Menu и Add Product */}
         <div className="flex items-center gap-4">
           <button onClick={() => setIsMobileMenuOpen((prev) => !prev)}>
             <svg
@@ -104,14 +135,12 @@ export default function Header() {
           </Link>
         </div>
 
-        {/* Център: Лого */}
         <div className="absolute left-1/2 transform -translate-x-1/2">
           <Link to="/" className="text-xl font-semibold">
             supp<span className="text-green-700">shop</span>
           </Link>
         </div>
 
-        {/* Дясно: Cart и Profile */}
         <div className="flex items-center gap-4">
           <Link to="/cart">
             <svg
@@ -149,10 +178,11 @@ export default function Header() {
       {/* === MOBILE MENU PANEL === */}
       {isMobileMenuOpen && (
         <div className="md:hidden w-full text-left font-medium bg-white border-t px-3 py-3 space-y-5">
-          {/* === Категории === */}
           <div
             className="flex items-center cursor-pointer"
             onClick={() => setIsCategoryOpen((prev) => !prev)}
+            aria-expanded={isCategoryOpen}
+            aria-controls="category-menu"
           >
             <p className="flex-1 text-left">Category</p>
             <span>
@@ -164,7 +194,7 @@ export default function Header() {
             </span>
           </div>
           {isCategoryOpen && (
-            <div className="w-screen bg-white">
+            <div id="category-menu" className="w-screen bg-white">
               <CategoryList
                 isMobile={true}
                 onItemClick={() => {
@@ -176,10 +206,11 @@ export default function Header() {
             </div>
           )}
 
-          {/* === Брандове === */}
           <div
             className="flex items-center cursor-pointer"
             onClick={() => setIsBrandOpen((prev) => !prev)}
+            aria-expanded={isBrandOpen}
+            aria-controls="brand-menu"
           >
             <p className="flex-1 text-left">Brands</p>
             <span>
@@ -191,7 +222,7 @@ export default function Header() {
             </span>
           </div>
           {isBrandOpen && (
-            <div className="w-screen bg-white">
+            <div id="brand-menu" className="w-screen bg-white">
               <BrandList
                 isMobile={true}
                 onItemClick={() => {

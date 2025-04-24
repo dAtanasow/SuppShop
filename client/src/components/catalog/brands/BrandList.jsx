@@ -9,7 +9,7 @@ export default function BrandList({ isMobile = false, onItemClick }) {
       path: "/catalog?brand=6AM Run",
     },
     {
-      name: "All Black Everything",
+      name: "ABE",
       image:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYaH0tCdP5As5lNOfIEsU4je-xJNP1tY8mDQ&s",
       path: "/catalog?brand=All Black Everything",
@@ -27,7 +27,7 @@ export default function BrandList({ isMobile = false, onItemClick }) {
       path: "/catalog?brand=Barebells",
     },
     {
-      name: "Bodybuilding.com Signature",
+      name: "Bodybuilding.com",
       image:
         "https://shop.bodybuilding.com/cdn/shop/files/bbcom-logos-tm-rgb-blue-primary_b0f87090-e853-49d2-bb6c-05a0a7322b70.png?height=628&pad_color=fff&v=1710959471&width=1200",
       path: "/catalog?brand=Bodybuilding.com Signature",
@@ -187,7 +187,7 @@ export default function BrandList({ isMobile = false, onItemClick }) {
       className={
         isMobile
           ? "grid grid-cols-3 sm:grid-cols-4 gap-2 pr-5 justify-items-center"
-          : "flex w-240 max-h-150 pt-10 p-2 flex-wrap overflow-y-auto absolute -left-115 hidden justify-evenly bg-white rounded-xl shadow-md group-hover:flex"
+          : "flex w-200 max-h-120 pt-10 gap-5 p-5 flex-wrap overflow-y-auto absolute -left-115 hidden justify-evenly bg-white rounded-xl shadow-md group-hover:flex"
       }
     >
       {brands.map((brand) => (

@@ -155,7 +155,7 @@ export default function CategoryList({ isMobile = false, onItemClick }) {
       className={
         isMobile
           ? "grid grid-cols-3 sm:grid-cols-4 gap-2 pr-5 justify-items-center"
-          : "flex w-240 max-h-150 pt-10 p-2 flex-wrap overflow-y-auto absolute -left-115 hidden justify-evenly bg-white rounded-xl shadow-md group-hover:flex"
+          : "flex w-200 max-h-120 pt-10 gap-5 p-5 flex-wrap overflow-y-auto absolute -left-115 hidden justify-evenly bg-white rounded-xl shadow-md group-hover:flex"
       }
     >
       {categories.map((category) => (
