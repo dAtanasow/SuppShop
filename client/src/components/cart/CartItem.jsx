@@ -30,21 +30,22 @@ export default function CartItem({
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="cart-item flex flex-col sm:flex-row items-center justify-between p-4 gap-4 sm:gap-6 border-b bg-white rounded-xl shadow-sm w-full sm:w-[calc(33.3333%-1rem)] md:w-[calc(25%-1rem)] flex-shrink-0">
+      <div className="flex flex-col sm:flex-row p-4 gap-4 sm:gap-6 border-b w-full rounded-xl bg-white shadow-sm">
         {/* Секция: Изображение */}
         <Link to={`/catalog/${item._id}`} className="flex-shrink-0">
-          <div className="w-full h-40 sm:h-36 lg:h-44 relative">
+          <div className="w-full max-w-[150px] sm:max-w-[100px] md:max-w-[150px] lg:max-w-[200px] xl:max-w-[250px] mx-auto overflow-hidden">
             <img
               src={item.imgURL}
               alt={item.title}
-              className="w-full h-full object-cover rounded-xl shadow-md"
+              className="w-full h-auto object-cover rounded-xl shadow-md border-none"
+              style={{ aspectRatio: "1 / 1" }}
             />
           </div>
         </Link>
 
         {/* Секция: Инфо + бутони */}
-        <div className="flex flex-col sm:flex-row justify-between w-full gap-4 sm:gap-6">
-          {/* Текст */}
+        <div className="flex flex-col sm:flex-row flex-grow justify-between w-full">
+          {/* Текстов блок */}
           <div className="flex flex-col gap-1 text-center sm:text-left">
             <h2 className="text-lg font-semibold">
               {item.title} - {item.brand}
@@ -54,9 +55,10 @@ export default function CartItem({
             <p className="text-gray-500 text-sm">{item.flavour}</p>
           </div>
 
-          {/* Бутоните */}
-          <div className="flex flex-col sm:flex-row items-center sm:items-end gap-2 sm:gap-4">
-            <div className="flex items-center gap-2">
+          {/* Бутоните: най-долу вдясно */}
+          <div className="flex flex-col sm:flex-col items-center sm:items-end gap-2 mt-4 sm:mt-auto self-end w-full sm:w-auto">
+            {/* Бутоните за количество – центрирани на мобилна */}
+            <div className="flex justify-center sm:justify-end items-center gap-2 w-full">
               <button
                 className="w-6 h-6 bg-red-500 text-white rounded-full hover:bg-red-600"
                 onClick={handleDecrease}
@@ -71,12 +73,16 @@ export default function CartItem({
                 <Plus />
               </button>
             </div>
-            <button
-              className="text-red-600 text-sm hover:underline"
-              onClick={() => setIsModalItemId(item._id)}
-            >
-              <Trash2 />
-            </button>
+
+            {/* Бутон за изтриване – вдясно на мобилна, както си беше на десктоп */}
+            <div className="flex justify-end w-full">
+              <button
+                className="text-red-600 text-sm hover:underline"
+                onClick={() => setIsModalItemId(item._id)}
+              >
+                <Trash2 />
+              </button>
+            </div>
 
             <ConfirmModal
               isOpen={modalItemId === item._id}
