@@ -22,15 +22,17 @@ export default function Login() {
   );
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-white sm:bg-gray-100 sm:flex sm:justify-center sm:items-center">
       <form
         onSubmit={submitHandler}
-        className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md"
+        className="w-full h-full px-4 pt-20 sm:pt-8 sm:h-auto sm:bg-white sm:rounded-xl sm:shadow-md sm:max-w-md"
       >
         {errors?.general && (
           <p className="text-red-500 text-center mb-4">{errors.general}</p>
         )}
-        <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
+        <h2 className="text-3xl font-semibold text-center text-gray-800 mb-6">
+          Welcome Back 👋
+        </h2>
         <FormField
           id="email"
           label="Email"
@@ -53,10 +55,22 @@ export default function Login() {
 
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white mt-5 p-3 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full bg-blue-600 text-white mt-6 py-3 rounded-xl hover:bg-blue-700 transition-colors duration-300"
         >
           {pending ? "Logging in..." : "Login"}
         </button>
+
+        <div className="text-center mt-4">
+          <p className="text-sm text-gray-600 p-5">
+            You don't have an account?{" "}
+            <a
+              href="/register"
+              className="text-blue-600 hover:text-blue-700 font-semibold"
+            >
+              Sign up here
+            </a>
+          </p>
+        </div>
       </form>
     </div>
   );

@@ -4,20 +4,14 @@ import FormField from "./FormField";
 
 export default function CreateEditProduct() {
   const { productId } = useParams();
-  const {
-    isEdit,
-    error,
-    formErrors,
-    values,
-    changeHandler,
-    submitHandler,
-  } = useCreateProduct(productId);
+  const { isEdit, error, formErrors, values, changeHandler, submitHandler } =
+    useCreateProduct(productId);
 
   return (
-    <div className="grid place-items-center min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-white sm:bg-gray-100 p-5 sm:grid sm:place-items-center">
       <form
         onSubmit={submitHandler}
-        className="bg-white p-8 m-3 rounded-lg shadow-lg w-full max-w-2xl"
+        className="bg-white p-0 sm:p-8 m-0 sm:m-3 sm:rounded-lg sm:shadow-lg w-full sm:max-w-2xl"
       >
         <h2 className="text-2xl font-bold text-center mb-6">
           {isEdit ? "Edit Product" : "Create Product"}
