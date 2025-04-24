@@ -115,7 +115,6 @@ export default function ProductDetails() {
               No Image Available
             </div>
           )}
-          <SellerInfo authorData={authorData} />
         </div>
 
         <div className="w-full md:w-1/2 p-4">
@@ -212,6 +211,7 @@ export default function ProductDetails() {
               Add to cart
             </button>
           )}
+          <SellerInfo authorData={authorData} />
         </div>
       </div>
 

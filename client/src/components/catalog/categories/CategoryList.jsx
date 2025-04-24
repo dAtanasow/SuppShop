@@ -1,6 +1,6 @@
 import CategoryItem from "./CategoryItem";
 
-export default function CategoryList() {
+export default function CategoryList({ isMobile = false, onItemClick }) {
   const categories = [
     {
       name: "BCAA",
@@ -151,13 +151,20 @@ export default function CategoryList() {
   ];
 
   return (
-    <ul className="flex w-240 max-h-150 p-10 flex-wrap justify-evenly overflow-y-auto absolute -left-77 hidden bg-white rounded-xl shadow-md group-hover:flex">
+    <ul
+      className={
+        isMobile
+          ? "grid grid-cols-3 sm:grid-cols-4 gap-2 pr-5 justify-items-center"
+          : "flex w-240 max-h-150 pt-10 p-2 flex-wrap overflow-y-auto absolute -left-115 hidden justify-evenly bg-white rounded-xl shadow-md group-hover:flex"
+      }
+    >
       {categories.map((category) => (
         <CategoryItem
           key={category.name}
           name={category.name}
           img={category.image}
           path={category.path}
+          onClick={onItemClick}
         />
       ))}
     </ul>

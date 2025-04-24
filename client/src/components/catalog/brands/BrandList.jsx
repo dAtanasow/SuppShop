@@ -1,6 +1,6 @@
 import BrandListItem from "./BrandListItem";
 
-export default function BrandList() {
+export default function BrandList({ isMobile = false, onItemClick }) {
   const brands = [
     {
       name: "6AM Run",
@@ -183,13 +183,20 @@ export default function BrandList() {
   ];
 
   return (
-    <ul className="flex w-240 max-h-150 pt-10 p-2 flex-wrap overflow-y-auto absolute -left-115 hidden justify-evenly bg-white rounded-xl shadow-md group-hover:flex">
+    <ul
+      className={
+        isMobile
+          ? "grid grid-cols-3 sm:grid-cols-4 gap-2 pr-5 justify-items-center"
+          : "flex w-240 max-h-150 pt-10 p-2 flex-wrap overflow-y-auto absolute -left-115 hidden justify-evenly bg-white rounded-xl shadow-md group-hover:flex"
+      }
+    >
       {brands.map((brand) => (
         <BrandListItem
           key={brand.name}
           name={brand.name}
           img={brand.image}
           path={brand.path}
+          onClick={onItemClick}
         />
       ))}
     </ul>
