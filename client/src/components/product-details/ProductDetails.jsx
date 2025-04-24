@@ -127,7 +127,7 @@ export default function ProductDetails() {
           </div>
 
           <div className="mb-6">
-            <ul className="list-disc pl-5 space-y-2 text-gray-600 text-lg">
+            <ul className="space-y-2 text-gray-600 text-lg">
               {product.category && (
                 <li>
                   <strong>Category:</strong> {product.category}
@@ -215,7 +215,7 @@ export default function ProductDetails() {
         </div>
       </div>
 
-      <div className="max-w-screen-lg m-auto mt-12">
+      <div className="w-[90%] max-w-screen-lg m-auto mt-12">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4" />
 
         <div className="mb-6">
