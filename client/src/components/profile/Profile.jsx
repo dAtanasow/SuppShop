@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuthContext } from "../../context/AuthContext";
 import ProfileEdit from "./ProfileEdit";
 import { Link } from "react-router-dom";
+import { LogOut } from "lucide-react";
 
 export default function Profile() {
   const { email, username, phone, img } = useAuthContext();
@@ -9,42 +10,51 @@ export default function Profile() {
   const toggleEditMode = () => setIsEditing((prev) => !prev);
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-2xl">
-        <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">
-          {isEditing ? "Edit Profile" : "Profile"}
+    <div className="min-h-screen flex flex-col">
+      {/* === Header Section === */}
+      <div className="flex items-center justify-between px-4 py-5 bg-white border-b shadow-sm">
+        <h1 className="text-xl font-bold text-gray-800">
+          {isEditing ? "Edit Profile" : "My Profile"}
         </h1>
+        <Link to="/logout" className="text-red-500 hover:text-red-600">
+          <LogOut size={22} />
+        </Link>
+      </div>
+
+      {/* === Main Content === */}
+      <div className="flex-grow p-6 flex flex-col items-center">
         {isEditing ? (
           <ProfileEdit toggleEditMode={toggleEditMode} />
         ) : (
-          <div className="flex flex-col items-center space-y-6">
+          <>
             <img
-              className="w-32 h-32 object-cover rounded-full border-4 border-blue-400 shadow-lg"
+              className="w-24 h-24 rounded-full object-cover border-4 border-green-500 shadow-md mb-4"
               src={img}
               alt="Profile"
             />
-            <div className="text-center space-y-2">
-              <p className="text-2xl font-semibold text-gray-800">{username}</p>
-              <p className="text-lg text-gray-600">{email}</p>
-              <p className="text-lg text-gray-600">{phone}</p>
+
+            <div className="text-center mb-6 space-y-1">
+              <p className="text-xl font-semibold text-gray-800">{username}</p>
+              <p className="text-gray-500">{email}</p>
+              <p className="text-gray-500">{phone}</p>
             </div>
 
-            <div className="flex space-x-4 mt-6">
+            <div className="flex flex-col gap-3 w-full">
               <button
                 onClick={toggleEditMode}
-                className="px-6 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition duration-300"
+                className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
               >
-                Edit
+                Edit Info
               </button>
 
               <Link
-                to={`/my-products`}
-                className="px-6 py-2 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition duration-300"
+                to="/my-products"
+                className="w-full px-4 py-2 text-center bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
               >
                 My Products
               </Link>
             </div>
-          </div>
+          </>
         )}
       </div>
     </div>
